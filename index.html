@@ -80,9 +80,10 @@
     .btn-accent { background: var(--accent); color: #fff; }
     .btn-accent:hover { background: #b45309; }
     .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
     .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
     .btn-outline:hover { background: #f8fafc; }
-    .btn-sm { min-height: 32px; padding: 4px 10px; font-size: 12px; border-radius: 8px; }
+    .btn-sm { min-height: 30px; padding: 4px 8px; font-size: 11.5px; border-radius: 7px; }
     .btn-block { width: 100%; }
     .login-err {
       background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;
@@ -239,7 +240,7 @@
       padding: 14px; z-index: 60; overflow-y: auto;
     }
     .modal {
-      background: #fff; width: 100%; max-width: 480px; border-radius: 16px;
+      background: #fff; width: 100%; max-width: 500px; border-radius: 16px;
       padding: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
       max-height: 92vh; overflow-y: auto;
     }
@@ -315,16 +316,16 @@
     <!-- FORM LOGIN ANGGOTA -->
     <form id="memberLoginForm">
       <div class="form-group">
-        <label for="memNoInput">Nomor Anggota *</label>
-        <input type="text" id="memNoInput" class="form-control" inputmode="numeric" placeholder="Masukkan Nomor Anggota (cth: 1, 5, 11)" required />
+        <label for="memNoInput">Username atau Nomor Anggota *</label>
+        <input type="text" id="memNoInput" class="form-control" placeholder="Masukkan Username atau No. Anggota" autocomplete="username" required />
       </div>
       <div class="form-group">
-        <label for="memPinInput">PIN Keanggotaan *</label>
+        <label for="memPinInput">Password / PIN Keanggotaan *</label>
         <div style="position:relative;">
-          <input type="password" id="memPinInput" class="form-control" inputmode="numeric" placeholder="Masukkan PIN (default: Nomor Anggota)" required style="padding-right:44px;" />
+          <input type="password" id="memPinInput" class="form-control" placeholder="Masukkan Password / PIN" autocomplete="current-password" required style="padding-right:44px;" />
           <button type="button" onclick="toggleVis('memPinInput')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;">👁️</button>
         </div>
-        <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">PIN standar awal sama dengan <b>Nomor Anggota</b> Anda (dapat diubah setelah masuk).</div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">Jika belum diatur pengurus, gunakan <b>Nomor Anggota</b> sebagai Username & Password awal.</div>
       </div>
       <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Lihat Data Keanggotaan Saya</button>
     </form>
@@ -375,7 +376,7 @@
         <div>
           <span class="pill pill-green" id="mpStatusBadge">ANGGOTA AKTIF</span>
           <h3 style="font-size:20px;font-weight:800;color:var(--secondary);margin-top:6px;" id="mpNama">-</h3>
-          <div style="font-size:13px;color:var(--muted);">Nomor Pokok Anggota: <strong style="color:var(--primary-dark);" id="mpNo">-</strong></div>
+          <div style="font-size:13px;color:var(--muted);">No. Anggota: <strong style="color:var(--primary-dark);" id="mpNo">-</strong> &bull; Username: <strong style="color:var(--secondary);" id="mpUsername">-</strong></div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:11.5px;color:var(--muted);">Total Saldo Simpanan Anda</div>
@@ -449,11 +450,11 @@
     <!-- UBAH PIN PRIBADI -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">🔐 Ubah PIN Keanggotaan Anda</div>
+        <div class="card-title">🔐 Ubah Password / PIN Pribadi Anda</div>
       </div>
       <form onsubmit="changeMemberPin(event)" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-        <input type="password" id="mpNewPin" class="form-control" inputmode="numeric" style="max-width:240px;" placeholder="Masukkan PIN baru (min. 4 angka)" required />
-        <button type="submit" class="btn btn-primary">Simpan PIN Baru</button>
+        <input type="password" id="mpNewPin" class="form-control" style="max-width:250px;" placeholder="Password / PIN baru (min. 4 karakter)" required />
+        <button type="submit" class="btn btn-primary">Simpan Password Baru</button>
       </form>
     </div>
   </div>
@@ -475,7 +476,7 @@
 
     <ul class="nav-list" id="desktopNav">
       <li class="nav-item active" data-page="dashboard">📊 Dashboard</li>
-      <li class="nav-item" data-page="simpanan">👥 Simpanan Anggota</li>
+      <li class="nav-item" data-page="simpanan">👥 Simpanan & Akun Anggota</li>
       <li class="nav-item" data-page="pinjaman">💰 Pinjaman & Macet</li>
       <li class="nav-item" data-page="jurnal">📒 Jurnal Kas & Bank</li>
       <li class="nav-item" data-page="laporan">📑 Laporan RAT</li>
@@ -594,12 +595,12 @@
       </div>
     </section>
 
-    <!-- ==================== 2. SIMPANAN ANGGOTA ==================== -->
+    <!-- ==================== 2. SIMPANAN & AKUN ANGGOTA ==================== -->
     <section id="page-simpanan" class="page-sec hidden">
       <div class="page-header">
         <div>
-          <h2>Data Simpanan Anggota</h2>
-          <p>Rincian 6 jenis simpanan Anggota Aktif (25) & Anggota Tidak Aktif (34)</p>
+          <h2>Data Simpanan & Akun Login Anggota</h2>
+          <p>Kelola simpanan, edit profil & saldo anggota, hapus data, serta atur akun login</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="btn btn-primary" onclick="openModal('modalSimpanan')">+ Setor / Tarik Simpanan</button>
@@ -613,7 +614,7 @@
             <button class="tab-btn active" id="tabAnggotaAktif" onclick="setSimpananTab('aktif')">Anggota Aktif (<span id="countAktif">25</span>)</button>
             <button class="tab-btn" id="tabAnggotaNonAktif" onclick="setSimpananTab('nonaktif')">Anggota Tidak Aktif (<span id="countNonAktif">34</span>)</button>
           </div>
-          <input type="text" id="searchAnggota" class="form-control" style="max-width:260px;min-height:38px;font-size:13.5px;" placeholder="🔍 Cari nama atau no. anggota..." oninput="renderSimpananTable()" />
+          <input type="text" id="searchAnggota" class="form-control" style="max-width:260px;min-height:38px;font-size:13.5px;" placeholder="🔍 Cari nama, username, no..." oninput="renderSimpananTable()" />
         </div>
 
         <div class="table-wrap">
@@ -630,7 +631,7 @@
                 <th class="num">Simp. Khusus</th>
                 <th class="num">Simp. Lain-lain</th>
                 <th class="num">Jumlah</th>
-                <th>PIN Login</th>
+                <th>Akun Login (User / PIN)</th>
                 <th class="no-print">Aksi</th>
               </tr>
             </thead>
@@ -891,6 +892,132 @@
 
 <!-- ==================== MODALS ==================== -->
 
+<!-- MODAL EDIT DATA & SIMPANAN ANGGOTA -->
+<div id="modalEditAnggota" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>✏️ Edit Data & Simpanan Anggota</h3>
+      <button class="close-btn" onclick="closeModal('modalEditAnggota')">&times;</button>
+    </div>
+    <form onsubmit="submitEditAnggota(event)">
+      <input type="hidden" id="editAgtId" />
+      <div class="row-2">
+        <div class="form-group">
+          <label>Nomor Anggota *</label>
+          <input type="text" id="editAgtNo" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label>Status Keanggotaan</label>
+          <select id="editAgtStatus" class="form-control">
+            <option value="aktif">Anggota Aktif</option>
+            <option value="nonaktif">Anggota Tidak Aktif</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nama Lengkap Anggota *</label>
+        <input type="text" id="editAgtNama" class="form-control" required />
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--primary-dark);margin:10px 0 8px;border-top:1px solid var(--border);padding-top:10px;">
+        Koreksi Saldo 6 Jenis Simpanan (Rp)
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Simpanan Pokok</label>
+          <input type="text" id="editAgtPokok" class="form-control money-input" inputmode="numeric" />
+        </div>
+        <div class="form-group">
+          <label>Simpanan Wajib</label>
+          <input type="text" id="editAgtWajib" class="form-control money-input" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Simpanan Sukarela (boleh desimal)</label>
+          <input type="number" step="0.01" id="editAgtSukarela" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label>Simp. Wajib Pinjam</label>
+          <input type="text" id="editAgtWP" class="form-control money-input" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Simpanan Khusus</label>
+          <input type="text" id="editAgtKhusus" class="form-control money-input" inputmode="numeric" />
+        </div>
+        <div class="form-group">
+          <label>Simpanan Lain-lain</label>
+          <input type="text" id="editAgtLain" class="form-control money-input" inputmode="numeric" />
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalEditAnggota')">Batal</button>
+        <button type="submit" class="btn btn-primary">💾 Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL KONFIRMASI HAPUS ANGGOTA -->
+<div id="modalHapusAnggota" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 style="color:var(--danger);">🗑️ Hapus Data Anggota</h3>
+      <button class="close-btn" onclick="closeModal('modalHapusAnggota')">&times;</button>
+    </div>
+    <input type="hidden" id="delAgtId" />
+    <p style="font-size:13.5px;margin-bottom:12px;">
+      Apakah Anda yakin ingin menghapus data anggota berikut dari daftar?
+    </p>
+    <div style="background:#fef2f2;border:1px solid #fecaca;padding:12px;border-radius:10px;margin-bottom:14px;">
+      <div style="font-weight:800;font-size:15px;color:#991b1b;" id="delAgtNama">-</div>
+      <div style="font-size:12.5px;color:#7f1d1d;">No. Anggota: <strong id="delAgtNo">-</strong> &bull; Total Simpanan: <strong id="delAgtTotal">Rp 0</strong></div>
+    </div>
+    <div class="form-group" style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;">
+      <input type="checkbox" id="delAdjustNeraca" checked style="margin-top:3px;" />
+      <label for="delAdjustNeraca" style="margin:0;cursor:pointer;">Kurangi juga saldo simpanan anggota ini dari posisi Neraca Koperasi</label>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+      <button type="button" class="btn btn-outline" onclick="closeModal('modalHapusAnggota')">Batal</button>
+      <button type="button" class="btn btn-danger" onclick="confirmDeleteAnggota()">Ya, Hapus Anggota</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PENGATURAN AKUN LOGIN ANGGOTA (OLEH ADMIN) -->
+<div id="modalAkunAnggota" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>🔑 Atur Akun Login Anggota</h3>
+      <button class="close-btn" onclick="closeModal('modalAkunAnggota')">&times;</button>
+    </div>
+    <form onsubmit="submitAkunAnggota(event)">
+      <input type="hidden" id="editAkunAgtId" />
+      <div style="background:#f8fafc;padding:10px 12px;border-radius:10px;margin-bottom:14px;border:1px solid var(--border);">
+        <div style="font-size:11.5px;color:var(--muted);">Identitas Anggota</div>
+        <div style="font-weight:800;font-size:15px;" id="editAkunNamaDisplay">-</div>
+        <div style="font-size:12px;color:var(--primary-dark);">Nomor Anggota: <strong id="editAkunNoDisplay">-</strong></div>
+      </div>
+      <div class="form-group">
+        <label>Username Anggota *</label>
+        <input type="text" id="editAkunUsername" class="form-control" placeholder="Contoh: susanto atau 1" required />
+        <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">Anggota dapat login menggunakan <b>Username ini</b> atau <b>Nomor Anggota</b>.</div>
+      </div>
+      <div class="form-group">
+        <label>Password / PIN Anggota *</label>
+        <input type="text" id="editAkunPin" class="form-control" placeholder="Masukkan PIN / Password anggota" required />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalAkunAnggota')">Batal</button>
+        <button type="submit" class="btn btn-primary">💾 Simpan Akun Anggota</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- MODAL TRANSAKSI CEPAT -->
 <div id="modalTransaksiCepat" class="modal-backdrop hidden">
   <div class="modal">
@@ -1071,6 +1198,16 @@
       <div class="form-group">
         <label>Nama Lengkap Anggota *</label>
         <input type="text" id="agtBaruNama" class="form-control" placeholder="Nama lengkap beserta gelar" required />
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Username Login Anggota</label>
+          <input type="text" id="agtBaruUser" class="form-control" placeholder="Opsional (default: No. Agt)" />
+        </div>
+        <div class="form-group">
+          <label>Password / PIN Awal</label>
+          <input type="text" id="agtBaruPin" class="form-control" placeholder="Opsional (default: No. Agt)" />
+        </div>
       </div>
       <div class="form-group">
         <label>Setoran Awal Simpanan Pokok (Rp)</label>
@@ -1413,10 +1550,9 @@ function checkAuth() {
 // Submit Login Anggota
 document.getElementById("memberLoginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const noInput = document.getElementById("memNoInput").value.trim();
+  const loginId = document.getElementById("memNoInput").value.trim().toLowerCase();
   const pinInput = document.getElementById("memPinInput").value.trim();
 
-  // Coba tarik data terbaru dari cloud jika terhubung agar anggota mendapat data terbaru
   const cfg = getCloudConfig();
   if (cfg.url) {
     try {
@@ -1434,14 +1570,19 @@ document.getElementById("memberLoginForm").addEventListener("submit", async (e) 
     ...db.anggotaNonAktif.map(a => ({ ...a, statusKeanggotaan: "ANGGOTA TIDAK AKTIF" }))
   ];
 
-  const found = allMembers.find(a => String(a.no).trim() === noInput);
+  const found = allMembers.find(a => {
+    const uName = (a.username ? String(a.username) : String(a.no)).trim().toLowerCase();
+    const noAgt = String(a.no).trim().toLowerCase();
+    return uName === loginId || noAgt === loginId;
+  });
+
   if (!found) {
-    return showLoginErr("Nomor Anggota tidak ditemukan. Periksa kembali nomor keanggotaan Anda.");
+    return showLoginErr("Username atau Nomor Anggota tidak ditemukan.");
   }
 
   const validPin = found.pin ? String(found.pin) : String(found.no).trim();
   if (pinInput !== validPin) {
-    return showLoginErr("PIN Keanggotaan salah. PIN bawaan awal adalah Nomor Anggota Anda.");
+    return showLoginErr("Password / PIN Keanggotaan salah.");
   }
 
   sessionStorage.setItem(AUTH_KEY, JSON.stringify({ role: "member", memberId: found.id }));
@@ -1482,15 +1623,179 @@ function doLogout() {
   checkAuth();
 }
 
-// ==================== RENDER PORTAL ANGGOTA (HANYA DATA PRIBADI) ====================
+// ==================== EDIT, HAPUS & AKUN ANGGOTA (ADMIN) ====================
 function findMemberById(id) {
-  const aktif = db.anggotaAktif.find(a => a.id === id);
-  if (aktif) return { data: aktif, status: "ANGGOTA AKTIF" };
-  const non = db.anggotaNonAktif.find(a => a.id === id);
-  if (non) return { data: non, status: "ANGGOTA TIDAK AKTIF" };
+  const idxAktif = db.anggotaAktif.findIndex(a => a.id === id);
+  if (idxAktif !== -1) return { data: db.anggotaAktif[idxAktif], status: "ANGGOTA AKTIF", listKey: "anggotaAktif", index: idxAktif };
+  const idxNon = db.anggotaNonAktif.findIndex(a => a.id === id);
+  if (idxNon !== -1) return { data: db.anggotaNonAktif[idxNon], status: "ANGGOTA TIDAK AKTIF", listKey: "anggotaNonAktif", index: idxNon };
   return null;
 }
 
+function openEditAnggotaModal(id) {
+  const found = findMemberById(id);
+  if (!found) return;
+  const a = found.data;
+
+  document.getElementById("editAgtId").value = a.id;
+  document.getElementById("editAgtNo").value = a.no;
+  document.getElementById("editAgtStatus").value = found.listKey === "anggotaAktif" ? "aktif" : "nonaktif";
+  document.getElementById("editAgtNama").value = a.nama;
+
+  document.getElementById("editAgtPokok").value = a.pokok ? Math.round(a.pokok).toLocaleString("id-ID") : "0";
+  document.getElementById("editAgtWajib").value = a.wajib ? Math.round(a.wajib).toLocaleString("id-ID") : "0";
+  document.getElementById("editAgtSukarela").value = a.sukarela || 0;
+  document.getElementById("editAgtWP").value = a.wajibPinjam ? Math.round(a.wajibPinjam).toLocaleString("id-ID") : "0";
+  document.getElementById("editAgtKhusus").value = a.khusus ? Math.round(a.khusus).toLocaleString("id-ID") : "0";
+  document.getElementById("editAgtLain").value = a.lain ? Math.round(a.lain).toLocaleString("id-ID") : "0";
+
+  openModal("modalEditAnggota");
+}
+
+function submitEditAnggota(e) {
+  e.preventDefault();
+  const id = document.getElementById("editAgtId").value;
+  const found = findMemberById(id);
+  if (!found) return;
+
+  const a = found.data;
+  const newNo = document.getElementById("editAgtNo").value.trim();
+  const newStatus = document.getElementById("editAgtStatus").value;
+  const newNama = document.getElementById("editAgtNama").value.trim();
+
+  const newPokok = parseMoney(document.getElementById("editAgtPokok").value);
+  const newWajib = parseMoney(document.getElementById("editAgtWajib").value);
+  const newSukarela = parseFloat(document.getElementById("editAgtSukarela").value) || 0;
+  const newWP = parseMoney(document.getElementById("editAgtWP").value);
+  const newKhusus = parseMoney(document.getElementById("editAgtKhusus").value);
+  const newLain = parseMoney(document.getElementById("editAgtLain").value);
+
+  // Hitung selisih perubahan saldo untuk memperbarui Neraca secara otomatis
+  db.neraca.simpPokok = Math.max(0, (db.neraca.simpPokok || 0) + (newPokok - (a.pokok || 0)));
+  db.neraca.simpWajib = Math.max(0, (db.neraca.simpWajib || 0) + (newWajib - (a.wajib || 0)));
+  db.neraca.simpSukarela = Math.max(0, (db.neraca.simpSukarela || 0) + (newSukarela - (a.sukarela || 0)));
+  db.neraca.simpWajibPinjaman = Math.max(0, (db.neraca.simpWajibPinjaman || 0) + (newWP - (a.wajibPinjam || 0)));
+  db.neraca.simpKhusus = Math.max(0, (db.neraca.simpKhusus || 0) + (newKhusus - (a.khusus || 0)));
+  db.neraca.simpLainLain = Math.max(0, (db.neraca.simpLainLain || 0) + (newLain - (a.lain || 0)));
+
+  a.no = newNo;
+  a.nama = newNama;
+  a.pokok = newPokok;
+  a.wajib = newWajib;
+  a.sukarela = newSukarela;
+  a.wajibPinjam = newWP;
+  a.khusus = newKhusus;
+  a.lain = newLain;
+
+  // Jika status keanggotaan berubah (Aktif <-> Tidak Aktif), pindahkan daftarnya
+  const targetListKey = newStatus === "aktif" ? "anggotaAktif" : "anggotaNonAktif";
+  if (found.listKey !== targetListKey) {
+    db[found.listKey].splice(found.index, 1);
+    db[targetListKey].push(a);
+  }
+
+  db.jurnal.push({
+    tanggal: new Date().toISOString().split("T")[0],
+    jenis: "Koreksi Data",
+    ket: `Edit data & saldo simpanan anggota a.n. ${newNama} (#${newNo})`,
+    media: "Buku Anggota",
+    debet: 0,
+    kredit: 0
+  });
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalEditAnggota");
+  showToast(`Data anggota ${newNama} berhasil diperbarui!`);
+}
+
+function openDeleteAnggotaModal(id) {
+  const found = findMemberById(id);
+  if (!found) return;
+  const a = found.data;
+  const tot = (a.pokok || 0) + (a.wajib || 0) + (a.sukarela || 0) + (a.wajibPinjam || 0) + (a.khusus || 0) + (a.lain || 0);
+
+  document.getElementById("delAgtId").value = a.id;
+  document.getElementById("delAgtNama").textContent = a.nama;
+  document.getElementById("delAgtNo").textContent = a.no;
+  document.getElementById("delAgtTotal").textContent = fmtRpDec(tot);
+  document.getElementById("delAdjustNeraca").checked = true;
+
+  openModal("modalHapusAnggota");
+}
+
+function confirmDeleteAnggota() {
+  const id = document.getElementById("delAgtId").value;
+  const found = findMemberById(id);
+  if (!found) return;
+
+  const a = found.data;
+  const adjustNeraca = document.getElementById("delAdjustNeraca").checked;
+
+  if (adjustNeraca) {
+    db.neraca.simpPokok = Math.max(0, (db.neraca.simpPokok || 0) - (a.pokok || 0));
+    db.neraca.simpWajib = Math.max(0, (db.neraca.simpWajib || 0) - (a.wajib || 0));
+    db.neraca.simpSukarela = Math.max(0, (db.neraca.simpSukarela || 0) - (a.sukarela || 0));
+    db.neraca.simpWajibPinjaman = Math.max(0, (db.neraca.simpWajibPinjaman || 0) - (a.wajibPinjam || 0));
+    db.neraca.simpKhusus = Math.max(0, (db.neraca.simpKhusus || 0) - (a.khusus || 0));
+    db.neraca.simpLainLain = Math.max(0, (db.neraca.simpLainLain || 0) - (a.lain || 0));
+  }
+
+  db[found.listKey].splice(found.index, 1);
+
+  db.jurnal.push({
+    tanggal: new Date().toISOString().split("T")[0],
+    jenis: "Hapus Anggota",
+    ket: `Menghapus data anggota: ${a.nama} (#${a.no})`,
+    media: "Buku Anggota",
+    debet: 0,
+    kredit: 0
+  });
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalHapusAnggota");
+  showToast(`Data anggota ${a.nama} telah dihapus.`);
+}
+
+function openAkunAnggotaModal(id) {
+  const found = findMemberById(id);
+  if (!found) return;
+  const a = found.data;
+  document.getElementById("editAkunAgtId").value = a.id;
+  document.getElementById("editAkunNamaDisplay").textContent = a.nama;
+  document.getElementById("editAkunNoDisplay").textContent = a.no;
+  document.getElementById("editAkunUsername").value = a.username ? a.username : a.no;
+  document.getElementById("editAkunPin").value = a.pin ? a.pin : a.no;
+  openModal("modalAkunAnggota");
+}
+
+function submitAkunAnggota(e) {
+  e.preventDefault();
+  const id = document.getElementById("editAkunAgtId").value;
+  const newUsername = document.getElementById("editAkunUsername").value.trim();
+  const newPin = document.getElementById("editAkunPin").value.trim();
+
+  if (!newUsername || !newPin) return showToast("Username dan PIN wajib diisi!", true);
+
+  const all = [...db.anggotaAktif, ...db.anggotaNonAktif];
+  const dup = all.find(x => x.id !== id && ((x.username && x.username.toLowerCase() === newUsername.toLowerCase()) || String(x.no).toLowerCase() === newUsername.toLowerCase()));
+  if (dup) {
+    return showToast(`Username "${newUsername}" sudah dipakai oleh ${dup.nama}!`, true);
+  }
+
+  const found = findMemberById(id);
+  if (!found) return;
+  found.data.username = newUsername;
+  found.data.pin = newPin;
+
+  saveDatabase(true);
+  renderSimpananTable();
+  closeModal("modalAkunAnggota");
+  showToast(`Akun login ${found.data.nama} berhasil disimpan!`);
+}
+
+// ==================== RENDER PORTAL ANGGOTA (HANYA DATA PRIBADI) ====================
 function renderMemberPortal() {
   const found = findMemberById(currentMemberId);
   if (!found) return doLogout();
@@ -1502,6 +1807,7 @@ function renderMemberPortal() {
 
   document.getElementById("mpNama").textContent = a.nama;
   document.getElementById("mpNo").textContent = a.no;
+  document.getElementById("mpUsername").textContent = a.username ? a.username : a.no;
 
   const totalSimp = (a.pokok || 0) + (a.wajib || 0) + (a.sukarela || 0) + (a.wajibPinjam || 0) + (a.khusus || 0) + (a.lain || 0);
   document.getElementById("mpTotalSimpanan").textContent = fmtRpDec(totalSimp);
@@ -1512,7 +1818,6 @@ function renderMemberPortal() {
   document.getElementById("mpKhusus").textContent = fmtRp(a.khusus);
   document.getElementById("mpLain").textContent = fmtRp(a.lain);
 
-  // Filter pinjaman yang cocok dengan nama anggota ini saja
   const namaLower = a.nama.toLowerCase();
   const kataKunci = namaLower.split(/[.,\s]+/).filter(w => w.length >= 4 && !["dra", "drs", "hj", "ny", "ir", "ba", "ma", "sh"].includes(w));
   const pinjPribadi = (db.pinjaman || []).filter(p => {
@@ -1549,7 +1854,6 @@ function renderMemberPortal() {
       </div>`;
   }
 
-  // Filter jurnal pribadi anggota ini saja
   const jurnalPribadi = (db.jurnal || []).filter(j => {
     const ketLow = (j.ket || "").toLowerCase();
     return ketLow.includes(namaLower) || kataKunci.some(k => ketLow.includes(k));
@@ -1591,13 +1895,13 @@ async function syncMemberData() {
 function changeMemberPin(e) {
   e.preventDefault();
   const newPin = document.getElementById("mpNewPin").value.trim();
-  if (newPin.length < 4) return showToast("PIN minimal 4 karakter/angka!", true);
+  if (newPin.length < 4) return showToast("Password / PIN minimal 4 karakter!", true);
   const found = findMemberById(currentMemberId);
   if (!found) return;
   found.data.pin = newPin;
   saveDatabase(true);
   document.getElementById("mpNewPin").value = "";
-  showToast("PIN keanggotaan Anda berhasil diubah!");
+  showToast("Password / PIN Anda berhasil diubah!");
 }
 
 // ==================== ADMIN CREDENTIALS & NAVIGASI ====================
@@ -1746,7 +2050,11 @@ function renderSimpananTable() {
 
   const list = currentSimpananTab === "aktif" ? db.anggotaAktif : db.anggotaNonAktif;
   const q = (document.getElementById("searchAnggota").value || "").toLowerCase();
-  const filtered = list.filter(a => a.nama.toLowerCase().includes(q) || String(a.no).includes(q));
+  const filtered = list.filter(a =>
+    a.nama.toLowerCase().includes(q) ||
+    String(a.no).includes(q) ||
+    (a.username && a.username.toLowerCase().includes(q))
+  );
 
   let tPokok = 0, tWajib = 0, tSuk = 0, tWP = 0, tKhusus = 0, tLain = 0, tAll = 0;
 
@@ -1754,6 +2062,9 @@ function renderSimpananTable() {
     const jml = (a.pokok || 0) + (a.wajib || 0) + (a.sukarela || 0) + (a.wajibPinjam || 0) + (a.khusus || 0) + (a.lain || 0);
     tPokok += a.pokok || 0; tWajib += a.wajib || 0; tSuk += a.sukarela || 0;
     tWP += a.wajibPinjam || 0; tKhusus += a.khusus || 0; tLain += a.lain || 0; tAll += jml;
+
+    const uDisp = a.username ? a.username : a.no;
+    const pDisp = a.pin ? a.pin : a.no;
 
     return `
       <tr>
@@ -1767,9 +2078,14 @@ function renderSimpananTable() {
         <td class="num">${fmtInt(a.khusus)}</td>
         <td class="num">${fmtInt(a.lain)}</td>
         <td class="num bold">${fmtNum(jml)}</td>
-        <td><span class="pill pill-gray">${a.pin ? a.pin : a.no}</span></td>
-        <td class="no-print">
-          <button class="btn btn-primary btn-sm" onclick="quickSetorAnggota('${a.id}')">+ Setor</button>
+        <td style="white-space:nowrap;">
+          <span class="pill pill-green">${uDisp}</span> / <span class="pill pill-gray">${pDisp}</span>
+        </td>
+        <td class="no-print" style="white-space:nowrap;">
+          <button class="btn btn-primary btn-sm" onclick="quickSetorAnggota('${a.id}')" title="Setor / Tarik Simpanan">+ Setor</button>
+          <button class="btn btn-outline btn-sm" onclick="openEditAnggotaModal('${a.id}')" title="Edit Profil & Saldo Simpanan">✏️ Edit</button>
+          <button class="btn btn-outline btn-sm" onclick="openAkunAnggotaModal('${a.id}')" title="Atur Username & PIN">🔑 Akun</button>
+          <button class="btn btn-danger btn-sm" onclick="openDeleteAnggotaModal('${a.id}')" title="Hapus Anggota">🗑️</button>
         </td>
       </tr>`;
   }).join("");
@@ -1953,8 +2269,9 @@ function submitSimpanan(e) {
   const tanggal = document.getElementById("simpTanggal").value;
 
   if (nominal <= 0) return showToast("Nominal harus lebih dari 0!", true);
-  let agt = db.anggotaAktif.find(a => a.id === id) || db.anggotaNonAktif.find(a => a.id === id);
-  if (!agt) return;
+  const found = findMemberById(id);
+  if (!found) return;
+  const agt = found.data;
 
   const mapNeraca = { pokok: "simpPokok", wajib: "simpWajib", sukarela: "simpSukarela", wajibPinjam: "simpWajibPinjaman", khusus: "simpKhusus", lain: "simpLainLain" };
   const labelJenis = { pokok: "Simp. Pokok", wajib: "Simp. Wajib", sukarela: "Simp. Sukarela", wajibPinjam: "Simp. Wajib Pinjam", khusus: "Simp. Khusus", lain: "Simp. Lain-lain" };
@@ -1989,9 +2306,15 @@ function submitTambahAnggota(e) {
   const no = document.getElementById("agtBaruNo").value.trim();
   const status = document.getElementById("agtBaruStatus").value;
   const nama = document.getElementById("agtBaruNama").value.trim();
+  const username = document.getElementById("agtBaruUser").value.trim() || no;
+  const pin = document.getElementById("agtBaruPin").value.trim() || no;
   const pokok = parseMoney(document.getElementById("agtBaruPokok").value);
 
-  const baru = { id: (status === "aktif" ? "A-" : "NA-") + Date.now(), no, nama, pokok, wajib: 0, sukarela: 0, wajibPinjam: 0, khusus: 0, lain: 0 };
+  const baru = {
+    id: (status === "aktif" ? "A-" : "NA-") + Date.now(),
+    no, nama, username, pin,
+    pokok, wajib: 0, sukarela: 0, wajibPinjam: 0, khusus: 0, lain: 0
+  };
   if (status === "aktif") db.anggotaAktif.push(baru); else db.anggotaNonAktif.push(baru);
 
   if (pokok > 0) {
@@ -2221,120 +2544,4 @@ function updateCloudUI(statusText = null, online = null) {
   document.getElementById("dashCloudDot").classList.toggle("online", isConnected);
   document.getElementById("dashCloudText").textContent = label;
   document.getElementById("cfgCloudDot").classList.toggle("online", isConnected);
-  document.getElementById("cfgCloudLabel").textContent = cfg.url ? label : "Belum Terhubung";
-}
-
-function saveCloudUrl() {
-  const url = document.getElementById("cloudUrlInput").value.trim();
-  const autoSync = document.getElementById("autoSyncCheck").checked;
-  localStorage.setItem(CLOUD_KEY, JSON.stringify({ url, autoSync }));
-  updateCloudUI();
-  if (url) {
-    showToast("URL Google Sheets disimpan! Mengirim data...");
-    pushToCloud(false);
-  } else {
-    showToast("URL Cloud dihapus. Menggunakan penyimpanan lokal.");
-  }
-}
-
-function toggleAutoSync() {
-  const cfg = getCloudConfig();
-  cfg.autoSync = document.getElementById("autoSyncCheck").checked;
-  localStorage.setItem(CLOUD_KEY, JSON.stringify(cfg));
-}
-
-async function pushToCloud(silent = false) {
-  const cfg = getCloudConfig();
-  if (!cfg.url) {
-    if (!silent) showToast("Masukkan URL Web App Google Script terlebih dahulu!", true);
-    return;
-  }
-  updateCloudUI("Menyimpan ke Cloud...", true);
-  try {
-    await fetch(cfg.url, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(db)
-    });
-    updateCloudUI("Tersinkron Cloud ✓", true);
-    if (!silent) showToast("Database berhasil disimpan ke Google Sheets!");
-  } catch (err) {
-    updateCloudUI("Gagal Sinkron Cloud", false);
-    if (!silent) showToast("Gagal mengirim data ke Google Sheets.", true);
-  }
-}
-
-async function pullFromCloud() {
-  const cfg = getCloudConfig();
-  if (!cfg.url) return showToast("Masukkan URL Web App Google Script terlebih dahulu!", true);
-  updateCloudUI("Mengambil dari Cloud...", true);
-  try {
-    const res = await fetch(cfg.url);
-    const data = await res.json();
-    if (data && data.neraca && data.anggotaAktif) {
-      data.meta = { namaKoperasi: "SIMPAN PINJAM NGEKSIGONDO", periode: "PER 31 DESEMBER 2025" };
-      db = data;
-      saveDatabase(false);
-      renderAll();
-      updateCloudUI("Tersinkron Cloud ✓", true);
-      showToast("Data terbaru berhasil ditarik dari Google Sheets!");
-    } else {
-      updateCloudUI("Cloud Masih Kosong", true);
-      showToast("Google Sheet masih kosong.", true);
-    }
-  } catch (err) {
-    updateCloudUI("Gagal Tarik Cloud", false);
-    showToast("Gagal mengambil data dari Google Sheets.", true);
-  }
-}
-
-function exportJSON() {
-  const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `Backup_Simpan_Pinjam_Ngeksigondo_${new Date().toISOString().split("T")[0]}.json`;
-  a.click();
-}
-
-function importJSON(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const parsed = JSON.parse(e.target.result);
-      if (parsed && parsed.neraca && parsed.anggotaAktif) {
-        parsed.meta = { namaKoperasi: "SIMPAN PINJAM NGEKSIGONDO", periode: "PER 31 DESEMBER 2025" };
-        db = parsed;
-        saveDatabase(true);
-        renderAll();
-        showToast("Backup JSON berhasil dipulihkan!");
-      } else {
-        showToast("Format file JSON tidak valid!", true);
-      }
-    } catch (err) {
-      showToast("Gagal membaca file backup!", true);
-    }
-  };
-  reader.readAsText(file);
-}
-
-function resetToRAT2025() {
-  if (!confirm("Yakin ingin mereset seluruh angka ke posisi awal Laporan RAT 31 Desember 2025?")) return;
-  db = JSON.parse(JSON.stringify(SEED_DATA));
-  saveDatabase(true);
-  renderAll();
-  showToast("Data berhasil dikembalikan ke posisi awal RAT 31 Desember 2025!");
-}
-
-function initApp() {
-  loadDatabase();
-  updateCloudUI();
-  renderAll();
-}
-
-checkAuth();
-</script>
-</body>
-</html>
+  document.getElementById("cfgCloudLabel").textContent = cfg.url ? label :
