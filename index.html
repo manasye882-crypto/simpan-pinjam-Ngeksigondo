@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>KSU NGEKSIGONDO - Sistem Pembukuan & Laporan RAT</title>
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #ccfbf1;
+      --secondary: #0f172a;
+      --accent: #d97706;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+    .hidden { display: none !important; }
+
+    /* LOGIN SCREEN */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f172a 0%, #0f766e 100%);
+      padding: 16px;
+    }
+    .login-card {
+      background: #fff;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.25);
+    }
+    .login-logo {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 800; margin: 0 auto 12px;
+    }
+    .login-card h1 { text-align: center; font-size: 19px; color: var(--secondary); font-weight: 800; }
+    .login-card p.sub { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+    .form-control {
+      width: 100%; min-height: 44px; padding: 10px 12px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 16px; color: var(--text); background: #fff;
+      transition: border-color 0.15s;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      min-height: 42px; padding: 8px 16px; border-radius: 10px; border: none;
+      font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: #b45309; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
+    .btn-outline:hover { background: #f8fafc; }
+    .btn-sm { min-height: 32px; padding: 4px 10px; font-size: 12px; border-radius: 8px; }
+    .btn-block { width: 100%; }
+    .login-err {
+      background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;
+      padding: 8px 12px; border-radius: 8px; font-size: 12.5px; margin-bottom: 12px;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .shake { animation: shake 0.3s ease-in-out; }
+
+    /* APP LAYOUT */
+    .app-shell { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 260px; background: var(--secondary); color: #e2e8f0;
+      display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0;
+      z-index: 40; padding: 18px 14px; overflow-y: auto;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 4px 6px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .brand-icon {
+      width: 38px; height: 38px; border-radius: 10px; background: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 18px; flex-shrink: 0;
+    }
+    .brand-title { font-weight: 800; font-size: 14.5px; color: #fff; letter-spacing: 0.3px; }
+    .brand-sub { font-size: 11px; color: #94a3b8; }
+    .nav-list { list-style: none; margin-top: 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+      border-radius: 10px; cursor: pointer; color: #cbd5e1; font-weight: 500; font-size: 13.5px;
+      transition: all 0.15s;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .nav-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+    .sidebar-info {
+      background: rgba(15,118,110,0.22); border: 1px solid rgba(20,184,166,0.3);
+      border-radius: 10px; padding: 10px 12px; font-size: 11.5px; color: #cbd5e1; margin: 12px 0;
+    }
+    .sidebar-info strong { color: #5eead4; display: block; margin-bottom: 2px; }
+
+    .main-area { flex: 1; margin-left: 260px; padding: 22px 24px 40px; max-width: 100%; }
+    .mobile-topbar {
+      display: none; position: sticky; top: 0; z-index: 35;
+      background: var(--secondary); color: #fff; padding: 10px 14px;
+      align-items: center; justify-content: space-between;
+    }
+    .bottom-nav {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      background: #fff; border-top: 1px solid var(--border);
+      grid-template-columns: repeat(6, 1fr); padding: 4px 2px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+    }
+    .bnav-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; padding: 6px 2px; border: none; background: transparent;
+      color: var(--muted); font-size: 10px; font-weight: 600; cursor: pointer;
+    }
+    .bnav-btn.active { color: var(--primary); }
+    .bnav-btn span.ico { font-size: 16px; }
+
+    /* HEADER & CARDS */
+    .page-header {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 18px;
+    }
+    .page-header h2 { font-size: 20px; font-weight: 800; color: var(--secondary); }
+    .page-header p { font-size: 13px; color: var(--muted); }
+    .badge-date {
+      background: #fff; border: 1px solid var(--border); padding: 6px 12px;
+      border-radius: 99px; font-size: 12px; font-weight: 600; color: var(--primary-dark);
+    }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 18px; }
+    .kpi-card {
+      background: var(--card); border-radius: var(--radius); padding: 15px;
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .kpi-card.teal { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .kpi-card.dark { background: var(--secondary); color: #fff; border-color: var(--secondary); }
+    .kpi-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; opacity: 0.85; }
+    .kpi-val { font-size: 18px; font-weight: 800; margin: 5px 0 3px; word-break: break-word; }
+    .kpi-sub { font-size: 11.5px; opacity: 0.8; }
+
+    .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 18px; }
+    .card {
+      background: var(--card); border-radius: var(--radius); padding: 18px;
+      border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--secondary); }
+
+    /* TABS & FILTERS */
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .tab-btn {
+      padding: 8px 14px; border-radius: 9px; border: 1px solid var(--border);
+      background: #fff; color: var(--muted); font-weight: 600; font-size: 13px; cursor: pointer;
+    }
+    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* TABLES */
+    .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { padding: 9px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: #f8fafc; font-weight: 700; color: #334155; font-size: 11.5px; text-transform: uppercase; white-space: nowrap; }
+    tr:hover td { background: #f8fafc; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .bold { font-weight: 700; }
+    .total-row td { background: #f1f5f9 !important; font-weight: 800; border-top: 2px solid #94a3b8; border-bottom: 2px solid #94a3b8; }
+
+    .pill {
+      display: inline-block; padding: 2px 8px; border-radius: 99px;
+      font-size: 11px; font-weight: 700;
+    }
+    .pill-green { background: #dcfce7; color: #166534; }
+    .pill-red { background: #fee2e2; color: #991b1b; }
+    .pill-amber { background: #fef3c7; color: #92400e; }
+    .pill-gray { background: #e2e8f0; color: #334155; }
+
+    /* REPORT / NERACA STYLES */
+    .neraca-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .report-box { border: 1.5px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #fff; }
+    .report-box h4 { background: var(--secondary); color: #fff; padding: 9px 12px; font-size: 13px; letter-spacing: 0.4px; }
+    .rep-table td { padding: 6px 10px; border-bottom: 1px solid #f1f5f9; font-size: 12.5px; }
+    .rep-sec { background: #f8fafc; font-weight: 800; color: var(--primary-dark); }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.6);
+      display: flex; align-items: center; justify-content: center;
+      padding: 14px; z-index: 60; overflow-y: auto;
+    }
+    .modal {
+      background: #fff; width: 100%; max-width: 480px; border-radius: 16px;
+      padding: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+      max-height: 92vh; overflow-y: auto;
+    }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .modal-head h3 { font-size: 16px; font-weight: 800; }
+    .close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); line-height: 1; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; top: 16px; right: 16px; z-index: 90;
+      background: var(--secondary); color: #fff; padding: 12px 16px;
+      border-radius: 10px; font-size: 13px; font-weight: 600;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+      border-left: 4px solid #10b981;
+    }
+
+    /* CLOUD STATUS BADGE */
+    .cloud-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 11px; border-radius: 99px; font-size: 12px; font-weight: 600;
+      background: #f1f5f9; border: 1px solid var(--border); color: var(--text);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; }
+    .dot.online { background: #16a34a; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-2, .neraca-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .mobile-topbar { display: flex; }
+      .bottom-nav { display: grid; }
+      .main-area { margin-left: 0; padding: 14px 12px 84px; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .kpi-val { font-size: 15px; }
+      .row-2 { grid-template-columns: 1fr; }
+    }
+
+    /* PRINT A4 */
+    @media print {
+      body { background: #fff; font-size: 11px; }
+      .sidebar, .mobile-topbar, .bottom-nav, .no-print { display: none !important; }
+      .main-area { margin: 0; padding: 0; }
+      .card { border: none; box-shadow: none; padding: 0; }
+      .print-header { display: block !important; text-align: center; margin-bottom: 14px; border-bottom: 2px solid #000; padding-bottom: 8px; }
+      .print-sign { display: grid !important; grid-template-columns: 1fr 1fr; text-align: center; margin-top: 28px; page-break-inside: avoid; }
+    }
+    .print-header, .print-sign { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- ==================== HALAMAN LOGIN ==================== -->
+<div id="loginScreen">
+  <div class="login-card" id="loginCard">
+    <div class="login-logo">K</div>
+    <h1>KSU NGEKSIGONDO</h1>
+    <p class="sub">Sistem Pembukuan Simpan Pinjam & Laporan RAT</p>
+    <div id="loginError" class="login-err hidden">Username atau password salah. Gunakan <b>admin</b> / <b>1234</b>.</div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="loginUser">Username</label>
+        <input type="text" id="loginUser" class="form-control" placeholder="Masukkan username" autocomplete="username" required />
+      </div>
+      <div class="form-group">
+        <label for="loginPass">Password</label>
+        <div style="position:relative;">
+          <input type="password" id="loginPass" class="form-control" placeholder="Masukkan password" autocomplete="current-password" required style="padding-right:44px;" />
+          <button type="button" id="togglePassBtn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;" title="Tampilkan Password">👁️</button>
+        </div>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px;">
+        <label style="display:flex;align-items:center;gap:6px;margin:0;cursor:pointer;">
+          <input type="checkbox" id="rememberMe" checked /> Ingat sesi masuk
+        </label>
+        <button type="button" id="autoFillLogin" style="background:none;border:none;color:var(--primary);font-weight:700;cursor:pointer;font-size:12px;">Isi Otomatis (admin/1234)</button>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:6px;">Masuk ke Aplikasi</button>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== APLIKASI UTAMA ==================== -->
+<div id="appContainer" class="app-shell hidden">
+  <!-- SIDEBAR DESKTOP -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🏛️</div>
+      <div>
+        <div class="brand-title">KSU NGEKSIGONDO</div>
+        <div class="brand-sub">Sistem Pembukuan & RAT</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="openModal('modalTransaksiCepat')">+ Transaksi Cepat</button>
+
+    <ul class="nav-list" id="desktopNav">
+      <li class="nav-item active" data-page="dashboard">📊 Dashboard</li>
+      <li class="nav-item" data-page="simpanan">👥 Simpanan Anggota</li>
+      <li class="nav-item" data-page="pinjaman">💰 Pinjaman & Macet</li>
+      <li class="nav-item" data-page="jurnal">📒 Jurnal Kas & Bank</li>
+      <li class="nav-item" data-page="laporan">📑 Laporan RAT</li>
+      <li class="nav-item" data-page="pengaturan">⚙️ Pengaturan & Cloud</li>
+    </ul>
+
+    <div class="sidebar-info">
+      <strong>📅 Basis Saldo RAT 2025</strong>
+      Saldo awal mengacu pada Laporan RAT KSU Ngeksigondo per 31 Desember 2025.
+    </div>
+
+    <button class="btn btn-outline btn-block" style="background:rgba(220,38,38,0.15);color:#fca5a5;border-color:rgba(220,38,38,0.35);" onclick="doLogout()">🚪 Keluar (Logout)</button>
+  </aside>
+
+  <!-- MOBILE TOPBAR -->
+  <div class="mobile-topbar">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:18px;">🏛️</span>
+      <div>
+        <div style="font-weight:800;font-size:13.5px;">KSU NGEKSIGONDO</div>
+        <div style="font-size:10px;color:#94a3b8;">Pembukuan & RAT 2025</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="btn btn-primary btn-sm" onclick="openModal('modalTransaksiCepat')">+ Catat</button>
+      <button class="btn btn-danger btn-sm" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-area">
+
+    <!-- ==================== 1. DASHBOARD ==================== -->
+    <section id="page-dashboard" class="page-sec">
+      <div class="page-header">
+        <div>
+          <h2>Dashboard KSU NGEKSIGONDO</h2>
+          <p>Ikhtisar posisi keuangan, simpanan anggota, pinjaman, dan SHU</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="cloud-pill" id="dashCloudStatus"><span class="dot" id="dashCloudDot"></span> <span id="dashCloudText">Lokal Browser</span></span>
+          <span class="badge-date">📅 Per 31 Desember 2025</span>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card teal">
+          <div class="kpi-label">Saldo Kas Tunai</div>
+          <div class="kpi-val" id="kpiKas">Rp 0</div>
+          <div class="kpi-sub">Kas di bendahara</div>
+        </div>
+        <div class="kpi-card dark">
+          <div class="kpi-label">Saldo Bank</div>
+          <div class="kpi-val" id="kpiBank">Rp 0</div>
+          <div class="kpi-sub">Rekening koperasi</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Pinjaman Anggota</div>
+          <div class="kpi-val" id="kpiPinjaman">Rp 0</div>
+          <div class="kpi-sub" id="kpiPinjamanSub">Lancar & Macet (Neraca)</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Simpanan Anggota</div>
+          <div class="kpi-val" id="kpiSimpanan">Rp 0</div>
+          <div class="kpi-sub" id="kpiSimpananSub">25 Aktif • 34 Tidak Aktif</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">SHU / Laba Berjalan</div>
+          <div class="kpi-val" id="kpiShu" style="color:var(--success);">Rp 0</div>
+          <div class="kpi-sub">Pendapatan - Biaya</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Komposisi Aktiva & Pasiva Neraca</div>
+              <div style="font-size:12px;color:var(--muted);">Perbandingan aset likuid, piutang/pinjaman, dan inventaris</div>
+            </div>
+            <span class="pill pill-green" id="dashTotalAktiva">Total Aktiva: Rp 0</span>
+          </div>
+          <div id="chartContainer" style="padding:8px 0;"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Rekap Buku Simpanan Anggota</div>
+              <div style="font-size:12px;color:var(--muted);">Rincian 6 jenis simpanan (Aktif + Tidak Aktif)</div>
+            </div>
+          </div>
+          <table class="rep-table" id="dashSimpananRekap"></table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Aktivitas Jurnal & Mutasi Terbaru</div>
+          <button class="btn btn-outline btn-sm" onclick="switchPage('jurnal')">Lihat Semua Jurnal →</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Keterangan Transaksi</th>
+                <th>Akun</th>
+                <th class="num">Debet (Masuk)</th>
+                <th class="num">Kredit (Keluar)</th>
+              </tr>
+            </thead>
+            <tbody id="dashJurnalBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. SIMPANAN ANGGOTA ==================== -->
+    <section id="page-simpanan" class="page-sec hidden">
+      <div class="page-header">
+        <div>
+          <h2>Data Simpanan Anggota</h2>
+          <p>Rincian 6 jenis simpanan Anggota Aktif (25) & Anggota Tidak Aktif (34)</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="openModal('modalSimpanan')">+ Setor / Tarik Simpanan</button>
+          <button class="btn btn-outline" onclick="openModal('modalTambahAnggota')">+ Anggota Baru</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+          <div class="tabs" style="margin:0;">
+            <button class="tab-btn active" id="tabAnggotaAktif" onclick="setSimpananTab('aktif')">Anggota Aktif (<span id="countAktif">25</span>)</button>
+            <button class="tab-btn" id="tabAnggotaNonAktif" onclick="setSimpananTab('nonaktif')">Anggota Tidak Aktif (<span id="countNonAktif">34</span>)</button>
+          </div>
+          <input type="text" id="searchAnggota" class="form-control" style="max-width:260px;min-height:38px;font-size:13.5px;" placeholder="🔍 Cari nama atau no. anggota..." oninput="renderSimpananTable()" />
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>No. Agt</th>
+                <th>Nama Anggota</th>
+                <th class="num">Simp. Pokok</th>
+                <th class="num">Simp. Wajib</th>
+                <th class="num">Simp. Sukarela</th>
+                <th class="num">Wajib Pinjam</th>
+                <th class="num">Simp. Khusus</th>
+                <th class="num">Simp. Lain-lain</th>
+                <th class="num">Jumlah</th>
+                <th class="no-print">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="simpananTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. PINJAMAN & MACET ==================== -->
+    <section id="page-pinjaman" class="page-sec hidden">
+      <div class="page-header">
+        <div>
+          <h2>Pinjaman & Angsuran</h2>
+          <p>Daftar Pemberian Pinjaman Lancar & Pinjaman Macet KSU Ngeksigondo</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-accent" onclick="openModal('modalPinjamanBaru')">+ Pinjaman Baru</button>
+          <button class="btn btn-outline" onclick="window.print()">🖨️ Cetak Daftar</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="kpi-card">
+          <div class="kpi-label">Saldo Daftar Pinjaman (Lancar)</div>
+          <div class="kpi-val" id="kpiPinjLancar" style="color:var(--primary);">Rp 0</div>
+          <div class="kpi-sub" id="subPinjLancar">6 peminjam aktif</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Saldo Pinjaman Macet</div>
+          <div class="kpi-val" id="kpiPinjMacet" style="color:var(--danger);">Rp 0</div>
+          <div class="kpi-sub" id="subPinjMacet">10 rekening macet</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Total Pinjaman di Neraca</div>
+          <div class="kpi-val" id="kpiPinjNeraca">Rp 0</div>
+          <div class="kpi-sub">Sesuai saldo akun Pinjaman Anggota</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+          <div class="tabs" style="margin:0;">
+            <button class="tab-btn active" id="tabPinjLancar" onclick="setPinjamanTab('lancar')">Daftar Pemberian Pinjaman (<span id="cntPinjLancar">6</span>)</button>
+            <button class="tab-btn" id="tabPinjMacet" onclick="setPinjamanTab('macet')">Pinjaman Macet (<span id="cntPinjMacet">10</span>)</button>
+          </div>
+          <input type="text" id="searchPinjaman" class="form-control" style="max-width:250px;min-height:38px;font-size:13.5px;" placeholder="🔍 Cari nama peminjam..." oninput="renderPinjamanTable()" />
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Peminjam</th>
+                <th>Tanggal Pinjaman</th>
+                <th class="num">Besar Pinjaman</th>
+                <th class="num">Saldo Akhir</th>
+                <th>Status</th>
+                <th class="no-print">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="pinjamanTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. JURNAL KAS & BANK ==================== -->
+    <section id="page-jurnal" class="page-sec hidden">
+      <div class="page-header">
+        <div>
+          <h2>Jurnal Transaksi Kas & Bank</h2>
+          <p>Catatan seluruh mutasi kas masuk, kas keluar, pendapatan bunga, dan biaya organisasi</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="openModal('modalPendapatanBiaya')">+ Pendapatan / Biaya</button>
+          <button class="btn btn-outline" onclick="openModal('modalMutasiKasBank')">⇄ Mutasi Kas ↔ Bank</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Keterangan</th>
+                <th>Media</th>
+                <th class="num">Debet (Masuk)</th>
+                <th class="num">Kredit (Keluar)</th>
+              </tr>
+            </thead>
+            <tbody id="jurnalFullBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. LAPORAN RAT ==================== -->
+    <section id="page-laporan" class="page-sec hidden">
+      <div class="print-header">
+        <h2>KOPERASI SERBA USAHA (KSU) "NGEKSIGONDO"</h2>
+        <p>LAPORAN PERTANGGUNGJAWABAN PENGURUS — POSISI PER 31 DESEMBER 2025</p>
+      </div>
+
+      <div class="page-header no-print">
+        <div>
+          <h2>Laporan Keuangan RAT</h2>
+          <p>Format resmi Laporan Laba Rugi, Neraca (Aktiva/Pasiva), dan Neraca Lajur</p>
+        </div>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Cetak / Simpan PDF (A4)</button>
+      </div>
+
+      <div class="tabs no-print">
+        <button class="tab-btn active" id="repTabLR" onclick="setReportTab('lr')">1. Laporan Laba Rugi</button>
+        <button class="tab-btn" id="repTabNeraca" onclick="setReportTab('neraca')">2. Neraca (Aktiva & Pasiva)</button>
+        <button class="tab-btn" id="repTabLajur" onclick="setReportTab('lajur')">3. Neraca Lajur (Worksheet)</button>
+      </div>
+
+      <!-- TAB 1: LABA RUGI -->
+      <div id="report-lr" class="card">
+        <div style="text-align:center;margin-bottom:14px;">
+          <h3 style="font-size:16px;font-weight:800;">LAPORAN LABA RUGI</h3>
+          <div style="font-weight:700;color:var(--primary-dark);">KSU NGEKSIGONDO</div>
+          <div style="font-size:12px;color:var(--muted);">PER 31 DESEMBER 2025</div>
+        </div>
+        <div class="table-wrap" style="max-width:650px;margin:0 auto;">
+          <table class="rep-table" id="tableLabaRugi"></table>
+        </div>
+      </div>
+
+      <!-- TAB 2: NERACA -->
+      <div id="report-neraca" class="card hidden">
+        <div style="text-align:center;margin-bottom:14px;">
+          <h3 style="font-size:16px;font-weight:800;">NERACA</h3>
+          <div style="font-weight:700;color:var(--primary-dark);">KSU NGEKSIGONDO</div>
+          <div style="font-size:12px;color:var(--muted);">PER 31 DESEMBER 2025</div>
+        </div>
+        <div class="neraca-grid">
+          <div class="report-box">
+            <h4>AKTIVA</h4>
+            <table class="rep-table" id="tableNeracaAktiva"></table>
+          </div>
+          <div class="report-box">
+            <h4>PASIVA</h4>
+            <table class="rep-table" id="tableNeracaPasiva"></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: NERACA LAJUR -->
+      <div id="report-lajur" class="card hidden">
+        <div style="text-align:center;margin-bottom:14px;">
+          <h3 style="font-size:16px;font-weight:800;">NERACA LAJUR</h3>
+          <div style="font-weight:700;color:var(--primary-dark);">KSU NGEKSIGONDO — PER 31 DESEMBER 2025</div>
+        </div>
+        <div class="table-wrap">
+          <table id="tableNeracaLajur" style="font-size:11.5px;"></table>
+        </div>
+      </div>
+
+      <div class="print-sign">
+        <div>
+          <p>Mengetahui,<br>Ketua KSU Ngeksigondo</p>
+          <br><br><br>
+          <p><strong>( ........................................ )</strong></p>
+        </div>
+        <div>
+          <p>Yogyakarta, 31 Desember 2025<br>Bendahara / Pembukuan</p>
+          <br><br><br>
+          <p><strong>( ........................................ )</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 6. PENGATURAN & DATABASE CLOUD ==================== -->
+    <section id="page-pengaturan" class="page-sec hidden">
+      <div class="page-header">
+        <div>
+          <h2>Pengaturan & Database Cloud</h2>
+          <p>Sinkronisasi data ke Google Sheets agar tersimpan permanen di HP & Laptop</p>
+        </div>
+      </div>
+
+      <!-- CLOUD GOOGLE SHEETS -->
+      <div class="card" style="border-left: 4px solid var(--primary);">
+        <div class="card-header">
+          <div>
+            <div class="card-title">☁️ Database Cloud (Google Sheets)</div>
+            <div style="font-size:12px;color:var(--muted);">Simpan & sinkronkan seluruh database koperasi ke Google Sheet milik Anda</div>
+          </div>
+          <span class="cloud-pill" id="cfgCloudBadge"><span class="dot" id="cfgCloudDot"></span> <span id="cfgCloudLabel">Belum Terhubung</span></span>
+        </div>
+
+        <div class="form-group">
+          <label for="cloudUrlInput">URL Web App Google Apps Script (akhiran /exec)</label>
+          <input type="url" id="cloudUrlInput" class="form-control" placeholder="https://script.google.com/macros/s/AKfycb.../exec" />
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+          <button class="btn btn-primary" onclick="saveCloudUrl()">💾 Simpan & Hubungkan</button>
+          <button class="btn btn-accent" onclick="pushToCloud(false)">⬆️ Simpan Data ke Cloud Sekarang</button>
+          <button class="btn btn-outline" onclick="pullFromCloud()">⬇️ Tarik Data dari Cloud</button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;margin-bottom:14px;">
+          <input type="checkbox" id="autoSyncCheck" checked onchange="toggleAutoSync()" />
+          <label for="autoSyncCheck" style="margin:0;cursor:pointer;">Otomatis kirim ke Google Sheets setiap kali ada transaksi baru</label>
+        </div>
+
+        <details style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:12.5px;">
+          <summary style="font-weight:700;cursor:pointer;color:var(--primary-dark);">📋 Lihat Kode Google Apps Script (Untuk Ditempel di Spreadsheet)</summary>
+          <p style="margin:8px 0;color:var(--muted);">Buka Google Sheet Anda → klik <b>Extensions &gt; Apps Script</b> → tempel kode di bawah ini → klik <b>Deploy &gt; New deployment &gt; Web app</b> (Who has access: <b>Anyone</b>):</p>
+          <pre style="background:#0f172a;color:#e2e8f0;padding:10px;border-radius:8px;overflow-x:auto;font-size:11.5px;">function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var val = sheet.getRange('A1').getValue();
+  return ContentService.createTextOutput(val || '{}').setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var data = e.postData.contents;
+  sheet.getRange('A1').setValue(data);
+  sheet.getRange('A2').setValue('Terakhir disimpan: ' + new Date());
+  return ContentService.createTextOutput(JSON.stringify({status: 'ok'})).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+        </details>
+      </div>
+
+      <!-- BACKUP JSON & RESET -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📦 Backup & Restore File (JSON)</div>
+          </div>
+          <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;">Unduh cadangan file database ke HP/Laptop atau pulihkan dari file cadangan.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button class="btn btn-outline" onclick="exportJSON()">⬇️ Unduh Backup (.json)</button>
+            <label class="btn btn-outline" style="cursor:pointer;">
+              ⬆️ Impor Backup (.json)
+              <input type="file" accept=".json" style="display:none;" onchange="importJSON(event)" />
+            </label>
+          </div>
+          <hr style="margin:16px 0;border:none;border-top:1px solid var(--border);" />
+          <p style="font-size:12.5px;color:var(--muted);margin-bottom:10px;">Kembalikan seluruh angka ke posisi awal Laporan RAT 31 Desember 2025:</p>
+          <button class="btn btn-danger btn-sm" onclick="resetToRAT2025()">🔄 Reset ke Saldo Awal RAT 2025</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔐 Keamanan Akun Login</div>
+          </div>
+          <div class="form-group">
+            <label>Username Login</label>
+            <input type="text" id="cfgUsername" class="form-control" value="admin" />
+          </div>
+          <div class="form-group">
+            <label>Password Baru</label>
+            <input type="password" id="cfgPassword" class="form-control" placeholder="Kosongkan jika tidak diubah" />
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="updateCredentials()">Simpan Username & Password</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+    <button class="bnav-btn active" data-page="dashboard"><span class="ico">📊</span>Beranda</button>
+    <button class="bnav-btn" data-page="simpanan"><span class="ico">👥</span>Simpanan</button>
+    <button class="bnav-btn" data-page="pinjaman"><span class="ico">💰</span>Pinjaman</button>
+    <button class="bnav-btn" data-page="jurnal"><span class="ico">📒</span>Jurnal</button>
+    <button class="bnav-btn" data-page="laporan"><span class="ico">📑</span>Laporan</button>
+    <button class="bnav-btn" data-page="pengaturan"><span class="ico">⚙️</span>Cloud</button>
+  </nav>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- MODAL TRANSAKSI CEPAT -->
+<div id="modalTransaksiCepat" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Pilih Jenis Transaksi</h3>
+      <button class="close-btn" onclick="closeModal('modalTransaksiCepat')">&times;</button>
+    </div>
+    <div style="display:grid;gap:10px;">
+      <button class="btn btn-primary btn-block" onclick="closeModal('modalTransaksiCepat');openModal('modalSimpanan')">➕ Setor / Tarik Simpanan Anggota</button>
+      <button class="btn btn-accent btn-block" onclick="closeModal('modalTransaksiCepat');openModal('modalPinjamanBaru')">💸 Pencairan Pinjaman Baru</button>
+      <button class="btn btn-outline btn-block" onclick="closeModal('modalTransaksiCepat');openModal('modalPendapatanBiaya')">🧾 Catat Pendapatan Bunga / Biaya Organisasi</button>
+      <button class="btn btn-outline btn-block" onclick="closeModal('modalTransaksiCepat');openModal('modalMutasiKasBank')">⇄ Setor Kas ke Bank / Tarik Bank ke Kas</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PENCAIRAN PINJAMAN BARU -->
+<div id="modalPinjamanBaru" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Pencairan Pinjaman Baru</h3>
+      <button class="close-btn" onclick="closeModal('modalPinjamanBaru')">&times;</button>
+    </div>
+    <form id="formPinjamanBaru" onsubmit="submitPinjamanBaru(event)">
+      <div class="form-group">
+        <label>Nama Peminjam *</label>
+        <input type="text" id="pinjNama" class="form-control" list="daftarNamaAnggota" placeholder="Ketik atau pilih nama anggota..." required />
+        <datalist id="daftarNamaAnggota"></datalist>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Besar Pinjaman (Rp) *</label>
+          <input type="text" id="pinjJumlah" class="form-control money-input" inputmode="numeric" placeholder="Contoh: 1.000.000" required />
+        </div>
+        <div class="form-group">
+          <label>Sumber Dana</label>
+          <select id="pinjSumber" class="form-control">
+            <option value="kas">Kas Tunai</option>
+            <option value="bank">Bank</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tanggal Pencairan *</label>
+        <input type="date" id="pinjTanggal" class="form-control" required />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalPinjamanBaru')">Batal</button>
+        <button type="submit" class="btn btn-accent">Cairkan Pinjaman</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL ANGSURAN PINJAMAN -->
+<div id="modalAngsuran" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Bayar Angsuran Pinjaman</h3>
+      <button class="close-btn" onclick="closeModal('modalAngsuran')">&times;</button>
+    </div>
+    <form id="formAngsuran" onsubmit="submitAngsuran(event)">
+      <input type="hidden" id="angPinjId" />
+      <div style="background:#f8fafc;padding:10px 12px;border-radius:10px;margin-bottom:12px;border:1px solid var(--border);">
+        <div style="font-size:12px;color:var(--muted);">Peminjam</div>
+        <div style="font-weight:800;font-size:15px;" id="angNamaDisplay">-</div>
+        <div style="font-size:12.5px;margin-top:2px;">Sisa Pokok Pinjaman: <strong id="angSisaDisplay" style="color:var(--danger);">Rp 0</strong></div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Angsuran Pokok (Rp) *</label>
+          <input type="text" id="angPokok" class="form-control money-input" inputmode="numeric" placeholder="0" required />
+        </div>
+        <div class="form-group">
+          <label>Bunga / Jasa Pinjaman (Rp)</label>
+          <input type="text" id="angBunga" class="form-control money-input" inputmode="numeric" placeholder="0" />
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Masuk ke</label>
+          <select id="angMedia" class="form-control">
+            <option value="kas">Kas Tunai</option>
+            <option value="bank">Bank</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Bayar *</label>
+          <input type="date" id="angTanggal" class="form-control" required />
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalAngsuran')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Angsuran</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL SETOR / TARIK SIMPANAN -->
+<div id="modalSimpanan" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Transaksi Simpanan Anggota</h3>
+      <button class="close-btn" onclick="closeModal('modalSimpanan')">&times;</button>
+    </div>
+    <form id="formSimpanan" onsubmit="submitSimpanan(event)">
+      <div class="form-group">
+        <label>Pilih Anggota *</label>
+        <select id="simpAnggotaId" class="form-control" required></select>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Jenis Transaksi</label>
+          <select id="simpArah" class="form-control">
+            <option value="setor">Setoran Masuk (+)</option>
+            <option value="tarik">Penarikan (-)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Jenis Simpanan</label>
+          <select id="simpJenis" class="form-control">
+            <option value="pokok">Simpanan Pokok</option>
+            <option value="wajib">Simpanan Wajib</option>
+            <option value="sukarela" selected>Simpanan Sukarela</option>
+            <option value="wajibPinjam">Simp. Wajib Pinjam</option>
+            <option value="khusus">Simpanan Khusus</option>
+            <option value="lain">Simpanan Lain-lain</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Nominal (Rp) *</label>
+          <input type="text" id="simpNominal" class="form-control money-input" inputmode="numeric" placeholder="0" required />
+        </div>
+        <div class="form-group">
+          <label>Media Kas/Bank</label>
+          <select id="simpMedia" class="form-control">
+            <option value="kas">Kas Tunai</option>
+            <option value="bank">Bank</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tanggal *</label>
+        <input type="date" id="simpTanggal" class="form-control" required />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalSimpanan')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Transaksi</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH ANGGOTA BARU -->
+<div id="modalTambahAnggota" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Tambah Anggota Baru</h3>
+      <button class="close-btn" onclick="closeModal('modalTambahAnggota')">&times;</button>
+    </div>
+    <form onsubmit="submitTambahAnggota(event)">
+      <div class="row-2">
+        <div class="form-group">
+          <label>Nomor Anggota *</label>
+          <input type="text" id="agtBaruNo" class="form-control" placeholder="Contoh: 121" required />
+        </div>
+        <div class="form-group">
+          <label>Status Keanggotaan</label>
+          <select id="agtBaruStatus" class="form-control">
+            <option value="aktif">Anggota Aktif</option>
+            <option value="nonaktif">Anggota Tidak Aktif</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nama Lengkap Anggota *</label>
+        <input type="text" id="agtBaruNama" class="form-control" placeholder="Nama lengkap beserta gelar" required />
+      </div>
+      <div class="form-group">
+        <label>Setoran Awal Simpanan Pokok (Rp)</label>
+        <input type="text" id="agtBaruPokok" class="form-control money-input" inputmode="numeric" value="50.000" />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalTambahAnggota')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Anggota</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL PENDAPATAN & BIAYA -->
+<div id="modalPendapatanBiaya" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Catat Pendapatan / Biaya</h3>
+      <button class="close-btn" onclick="closeModal('modalPendapatanBiaya')">&times;</button>
+    </div>
+    <form onsubmit="submitPendapatanBiaya(event)">
+      <div class="form-group">
+        <label>Pos Akun Laba Rugi</label>
+        <select id="pbAkun" class="form-control">
+          <option value="pendBungaPinjaman">Pendapatan Bunga Pinjaman (+)</option>
+          <option value="pendAdm">Pendapatan Adm (+)</option>
+          <option value="pendBungaBank">Pendapatan Bunga Bank (+)</option>
+          <option value="pendLain">Pendapatan Lain-lain (+)</option>
+          <option value="biayaAdmBank">Biaya Adm Bank (-)</option>
+          <option value="biayaOrganisasi">Biaya Organisasi (-)</option>
+        </select>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Nominal (Rp) *</label>
+          <input type="text" id="pbNominal" class="form-control money-input" inputmode="numeric" required />
+        </div>
+        <div class="form-group">
+          <label>Media Kas/Bank</label>
+          <select id="pbMedia" class="form-control">
+            <option value="kas">Kas Tunai</option>
+            <option value="bank">Bank</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Keterangan *</label>
+        <input type="text" id="pbKet" class="form-control" placeholder="Contoh: Biaya Rapat Pengurus" required />
+      </div>
+      <div class="form-group">
+        <label>Tanggal *</label>
+        <input type="date" id="pbTanggal" class="form-control" required />
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalPendapatanBiaya')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL MUTASI KAS <-> BANK -->
+<div id="modalMutasiKasBank" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Mutasi Pemindahan Kas ↔ Bank</h3>
+      <button class="close-btn" onclick="closeModal('modalMutasiKasBank')">&times;</button>
+    </div>
+    <form onsubmit="submitMutasiKasBank(event)">
+      <div class="form-group">
+        <label>Arah Pemindahan</label>
+        <select id="mkArah" class="form-control">
+          <option value="kas_ke_bank">Setor Kas Tunai ke Bank</option>
+          <option value="bank_ke_kas">Tarik Tunai dari Bank ke Kas</option>
+        </select>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Nominal (Rp) *</label>
+          <input type="text" id="mkNominal" class="form-control money-input" inputmode="numeric" required />
+        </div>
+        <div class="form-group">
+          <label>Tanggal *</label>
+          <input type="date" id="mkTanggal" class="form-control" required />
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalMutasiKasBank')">Batal</button>
+        <button type="submit" class="btn btn-primary">Proses Mutasi</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ==================== SEED DATA LENGKAP RAT 31 DESEMBER 2025 ====================
+const SEED_DATA = {
+  meta: {
+    namaKoperasi: "KSU NGEKSIGONDO",
+    periode: "PER 31 DESEMBER 2025"
+  },
+  // Saldo Neraca & Laba Rugi (Sesuai Laporan RAT 31 Des 2025)
+  neraca: {
+    // AKTIVA
+    kas: 1354125,
+    bank: 9161488,
+    pinjamanAnggota: 72933000,
+    piutangAsuransi: 0,
+    piutangDagang: 3946000,
+    persediaanBatik: 1650100,
+    inventaris: 1951500,
+    pakaianJawa: 250000,
+    akmPenyusutan: 1590000,
+    // PASIVA - SIMPANAN & DANA
+    simpSukarela: 19486035,
+    simpLainLain: 2771561,
+    simpSukarelaNonAnggota: 0,
+    danaPegawai: 876756,
+    danaPengurus: 1246616,
+    danaPendidikan: 3411756,
+    danaSosial: 1933099,
+    danaPembDaerah: 263378,
+    // PASIVA - UTANG
+    utangDagang: 48500,
+    hutangArisan: 928500,
+    hutangPaguyuban: 700,
+    simpKasKopLama: 430000,
+    // PASIVA - MODAL
+    simpKhusus: 6525000,
+    simpPokok: 3896000,
+    simpWajib: 14833500,
+    simpWajibPinjaman: 4234133,
+    sumbanganBpt: 2773078,
+    donasi: 1319703,
+    cadangan: 12210289,
+    shuBulanLalu: 0,
+    jasaSimpanan: 5331826,
+    jasaAnggota: 6664783
+  },
+  labaRugi: {
+    pendBungaPinjaman: 1523000,
+    pendAdm: 0,
+    pendBungaBank: 0,
+    pendLain: 0,
+    biayaAdmBank: 0,
+    biayaOrganisasi: 1052000
+  },
+  // 25 ANGGOTA AKTIF (Hal. 5 PDF)
+  anggotaAktif: [
+    { id: "A-1", no: "1", nama: "Susanto", pokok: 50000, wajib: 370800, sukarela: 222649.76, wajibPinjam: 166500, khusus: 170000, lain: 165400 },
+    { id: "A-5", no: "5", nama: "H. Eko Mulyono", pokok: 50000, wajib: 108600, sukarela: 657359.39, wajibPinjam: 20500, khusus: 160000, lain: 125000 },
+    { id: "A-11", no: "11", nama: "Sukarjo", pokok: 100000, wajib: 518600, sukarela: 165107.69, wajibPinjam: 110000, khusus: 160000, lain: 125445 },
+    { id: "A-13", no: "13", nama: "Rinto Widyarto", pokok: 100000, wajib: 353200, sukarela: 47548.16, wajibPinjam: 485500, khusus: 120000, lain: 479 },
+    { id: "A-16", no: "16", nama: "H. Riyanto", pokok: 100000, wajib: 204000, sukarela: 335.78, wajibPinjam: 500, khusus: 120000, lain: 1532 },
+    { id: "A-18", no: "18", nama: "Dra. Sri Hennywati", pokok: 50000, wajib: 12200, sukarela: 16433.44, wajibPinjam: 5000, khusus: 60000, lain: 13627 },
+    { id: "A-22", no: "22", nama: "Ny. Yuwono", pokok: 100000, wajib: 546000, sukarela: 1305.12, wajibPinjam: 498500, khusus: 160000, lain: 1625 },
+    { id: "A-25", no: "25", nama: "Hj Sukin DS", pokok: 50000, wajib: 87600, sukarela: 52288.49, wajibPinjam: 10000, khusus: 110000, lain: 201987 },
+    { id: "A-26", no: "26", nama: "Sugiyamto", pokok: 150000, wajib: 516400, sukarela: 498688.27, wajibPinjam: 304500, khusus: 160000, lain: 14348 },
+    { id: "A-38", no: "38", nama: "H. Soebandi Edris", pokok: 50000, wajib: 436100, sukarela: 2094999.02, wajibPinjam: 130000, khusus: 160000, lain: 104586 },
+    { id: "A-39", no: "39", nama: "Hj. Wanati Daldi", pokok: 50000, wajib: 489200, sukarela: 1388621.69, wajibPinjam: 75500, khusus: 150000, lain: 103422 },
+    { id: "A-45", no: "45", nama: "Suyanto", pokok: 50000, wajib: 616200, sukarela: 37305.23, wajibPinjam: 0, khusus: 155000, lain: 36053 },
+    { id: "A-50", no: "50", nama: "H. Karsim", pokok: 50000, wajib: 0, sukarela: 5.10, wajibPinjam: 48600, khusus: 160000, lain: 0 },
+    { id: "A-67", no: "67", nama: "Thomas Sutrisno", pokok: 100000, wajib: 576000, sukarela: 316466.79, wajibPinjam: 285000, khusus: 140000, lain: 83761 },
+    { id: "A-70", no: "70", nama: "Dru Hendro", pokok: 100000, wajib: 362000, sukarela: 299877.80, wajibPinjam: 196000, khusus: 110000, lain: 83123 },
+    { id: "A-72", no: "72", nama: "Hj. Ayu Astuti Dhama", pokok: 100000, wajib: 468000, sukarela: 579679.08, wajibPinjam: 70000, khusus: 160000, lain: 16489 },
+    { id: "A-74", no: "74", nama: "Ir. Joko Santosa", pokok: 100000, wajib: 600000, sukarela: 5526491.12, wajibPinjam: 10000, khusus: 160000, lain: 47291 },
+    { id: "A-92", no: "92", nama: "Yustinus Surono", pokok: 50000, wajib: 630000, sukarela: 660028.87, wajibPinjam: 385000, khusus: 160000, lain: 0 },
+    { id: "A-96", no: "96", nama: "Khusnul Yustiono", pokok: 100000, wajib: 494000, sukarela: 21528.38, wajibPinjam: 0, khusus: 50000, lain: 378490 },
+    { id: "A-104", no: "104", nama: "Ary Sugeng Koesnandar", pokok: 50000, wajib: 254000, sukarela: 1165878.61, wajibPinjam: 45000, khusus: 160000, lain: 0 },
+    { id: "A-108", no: "108", nama: "Ardita", pokok: 100000, wajib: 564000, sukarela: 83872.21, wajibPinjam: 305000, khusus: 50000, lain: 0 },
+    { id: "A-109", no: "109", nama: "Mamiek Sukamto", pokok: 50000, wajib: 200000, sukarela: 22716.78, wajibPinjam: 125000, khusus: 100000, lain: 0 },
+    { id: "A-116", no: "116", nama: "Jefri Permana", pokok: 100000, wajib: 270000, sukarela: 1580000, wajibPinjam: 0, khusus: 100000, lain: 50000 },
+    { id: "A-119", no: "119", nama: "Kurnia Widyaningrum", pokok: 100000, wajib: 60000, sukarela: 36500, wajibPinjam: 54000, khusus: 50000, lain: 0 },
+    { id: "A-120", no: "120", nama: "Paulus Ngatiman, M.Hum, M.Pd", pokok: 50000, wajib: 60000, sukarela: 450000, wajibPinjam: 30000, khusus: 100000, lain: 0 }
+  ],
+  // 34 ANGGOTA TIDAK AKTIF (Hal. 6 PDF)
+  anggotaNonAktif: [
+    { id: "NA-2", no: "2", nama: "Drs. Sudiyarto", pokok: 50000, wajib: 251600, sukarela: 85392.60, wajibPinjam: 41500, khusus: 180000, lain: 73200 },
+    { id: "NA-3", no: "3", nama: "Supardi, BA", pokok: 100000, wajib: 76100, sukarela: 1358.24, wajibPinjam: 103000, khusus: 10000, lain: 10328 },
+    { id: "NA-30", no: "30", nama: "Hj. Nanik Mulyono", pokok: 50000, wajib: 75600, sukarela: 716685.39, wajibPinjam: 363000, khusus: 110000, lain: 300000 },
+    { id: "NA-32", no: "32", nama: "Lestari Dwi H", pokok: 100000, wajib: 225600, sukarela: 0.82, wajibPinjam: 79533, khusus: 180000, lain: 0 },
+    { id: "NA-36", no: "36", nama: "Suharyono, MA", pokok: 50000, wajib: 171600, sukarela: 43306.64, wajibPinjam: 5000, khusus: 160000, lain: 57785 },
+    { id: "NA-37", no: "37", nama: "Hj. Sri Sumardikaningsih", pokok: 100000, wajib: 588000, sukarela: 62016.29, wajibPinjam: 15000, khusus: 170000, lain: 118756 },
+    { id: "NA-41", no: "41", nama: "FX. Wardjoko", pokok: 50000, wajib: 254400, sukarela: 19348.86, wajibPinjam: 15000, khusus: 100000, lain: 12092 },
+    { id: "NA-46", no: "46", nama: "Suhirman", pokok: 50000, wajib: 26400, sukarela: 23749.56, wajibPinjam: 0, khusus: 110000, lain: 22015 },
+    { id: "NA-54", no: "54", nama: "Malsi Ariyawito", pokok: 50000, wajib: 735000, sukarela: 54144.83, wajibPinjam: 0, khusus: 160000, lain: 35323 },
+    { id: "NA-55", no: "55", nama: "Marwanto", pokok: 50000, wajib: 120000, sukarela: 36477.54, wajibPinjam: 10000, khusus: 180000, lain: 38308 },
+    { id: "NA-56", no: "56", nama: "Asrori", pokok: 50000, wajib: 94000, sukarela: 26923.74, wajibPinjam: 10000, khusus: 90000, lain: 30148 },
+    { id: "NA-65", no: "65", nama: "Ny. Dasuki", pokok: 50000, wajib: 200000, sukarela: 92991.52, wajibPinjam: 32000, khusus: 160000, lain: 72725 },
+    { id: "NA-66", no: "66", nama: "Gunawan", pokok: 50000, wajib: 12000, sukarela: 22785.67, wajibPinjam: 0, khusus: 30000, lain: 25239 },
+    { id: "NA-71", no: "71", nama: "Rudy Nurbiyanto", pokok: 50000, wajib: 36000, sukarela: 21225.91, wajibPinjam: 20000, khusus: 40000, lain: 65234 },
+    { id: "NA-73", no: "73", nama: "Suparman", pokok: 50000, wajib: 72000, sukarela: 24497.71, wajibPinjam: 0, khusus: 110000, lain: 11793 },
+    { id: "NA-75", no: "75", nama: "Indra Karyanto", pokok: 50000, wajib: 104000, sukarela: 44440.55, wajibPinjam: 35000, khusus: 160000, lain: 106300 },
+    { id: "NA-76", no: "76", nama: "Acta Suryadinata", pokok: 50000, wajib: 84000, sukarela: 30132.35, wajibPinjam: 0, khusus: 110000, lain: 13000 },
+    { id: "NA-77", no: "77", nama: "Harmadi", pokok: 50000, wajib: 50000, sukarela: 32307.81, wajibPinjam: 0, khusus: 110000, lain: 2000 },
+    { id: "NA-78", no: "78", nama: "Bambang EP", pokok: 50000, wajib: 24000, sukarela: 1181105.02, wajibPinjam: 10000, khusus: 110000, lain: 75000 },
+    { id: "NA-80", no: "80", nama: "Sumarjono/Kartini", pokok: 100000, wajib: 575000, sukarela: 359.11, wajibPinjam: 0, khusus: 0, lain: 3290 },
+    { id: "NA-81", no: "81", nama: "Ahmad Widadi", pokok: 100000, wajib: 560000, sukarela: 14543.30, wajibPinjam: 0, khusus: 0, lain: 3290 },
+    { id: "NA-83", no: "83", nama: "Hj. Muid", pokok: 50000, wajib: 122000, sukarela: 69804.95, wajibPinjam: 20000, khusus: 160000, lain: 2000 },
+    { id: "NA-85", no: "85", nama: "Alit Maulita", pokok: 50000, wajib: 108000, sukarela: 65072.27, wajibPinjam: 20000, khusus: 110000, lain: 28000 },
+    { id: "NA-89", no: "89", nama: "Joko Wiyanto", pokok: 50000, wajib: 48000, sukarela: 9223.42, wajibPinjam: 0, khusus: 0, lain: 0 },
+    { id: "NA-93", no: "93", nama: "Loni Setiawan", pokok: 26000, wajib: 0, sukarela: 2612.62, wajibPinjam: 0, khusus: 0, lain: 0 },
+    { id: "NA-94", no: "94", nama: "Batrudin", pokok: 50000, wajib: 0, sukarela: 5024.28, wajibPinjam: 0, khusus: 0, lain: 0 },
+    { id: "NA-97", no: "97", nama: "Suryawan", pokok: 100000, wajib: 581300, sukarela: 280435.25, wajibPinjam: 0, khusus: 160000, lain: 5607 },
+    { id: "NA-98", no: "98", nama: "Ponijan", pokok: 50000, wajib: 155000, sukarela: 1624.53, wajibPinjam: 0, khusus: 60000, lain: 0 },
+    { id: "NA-103", no: "103", nama: "Sari Roso", pokok: 50000, wajib: 302000, sukarela: 530826.07, wajibPinjam: 0, khusus: 160000, lain: 0 },
+    { id: "NA-106", no: "106", nama: "Bambang Saryono", pokok: 50000, wajib: 0, sukarela: 4215.07, wajibPinjam: 0, khusus: 50000, lain: 0 },
+    { id: "NA-110", no: "110", nama: "Heru Rono P.", pokok: 50000, wajib: 75000, sukarela: 33666.86, wajibPinjam: 45000, khusus: 100000, lain: 0 },
+    { id: "NA-113", no: "113", nama: "Made Sukada", pokok: 20000, wajib: 60000, sukarela: 5173.44, wajibPinjam: 0, khusus: 60000, lain: 7470 },
+    { id: "NA-114", no: "114", nama: "Yoel Singgih Pramono", pokok: 50000, wajib: 190000, sukarela: 18875.65, wajibPinjam: 50000, khusus: 100000, lain: 50000 },
+    { id: "NA-115", no: "115", nama: "H. Salim, SH", pokok: 50000, wajib: 60000, sukarela: 0, wajibPinjam: 0, khusus: 100000, lain: 50000 }
+  ],
+  // 6 PINJAMAN LANCAR & 10 PINJAMAN MACET (Hal. 4 PDF)
+  pinjaman: [
+    { id: "P-1", nama: "Yustinus S.", tanggal: "2024-12-22", tglTampil: "22 Des 2024", besar: 4500000, saldo: 3600000, status: "lancar" },
+    { id: "P-2", nama: "Paulus N.", tanggal: "2024-08-15", tglTampil: "15 Agust 2024", besar: 3000000, saldo: 2400000, status: "lancar" },
+    { id: "P-3", nama: "Ardita", tanggal: "2023-11-26", tglTampil: "26 Nov 2023", besar: 3500000, saldo: 1720000, status: "lancar" },
+    { id: "P-4", nama: "Rinto Widyarto", tanggal: "2022-10-21", tglTampil: "21 Okt 2022", besar: 10700000, saldo: 10700000, status: "lancar" },
+    { id: "P-5", nama: "Ny. Yuwono", tanggal: "2020-05-08", tglTampil: "8 Mei 2020", besar: 10000000, saldo: 7400000, status: "lancar" },
+    { id: "P-6", nama: "Kurnia W.", tanggal: "2020-03-31", tglTampil: "31 Mart 2020", besar: 5400000, saldo: 3950000, status: "lancar" },
+    // Pinjaman Macet
+    { id: "PM-1", nama: "Supardi, BA", tanggal: "2022-09-25", tglTampil: "25 Sept 2022", besar: 7500000, saldo: 4800000, status: "macet" },
+    { id: "PM-2", nama: "Bagus Ristanto", tanggal: "2022-03-13", tglTampil: "13 Mart 2022", besar: 1500000, saldo: 370000, status: "macet" },
+    { id: "PM-3", nama: "Mamiek Sukamto", tanggal: "2018-12-31", tglTampil: "31 Des 2018", besar: 3500000, saldo: 3300000, status: "macet" },
+    { id: "PM-4", nama: "Ponijan", tanggal: "2018-12-31", tglTampil: "31 Des 2018", besar: 6400000, saldo: 6400000, status: "macet" },
+    { id: "PM-5", nama: "V. Mujinah I & II", tanggal: "2018-12-31", tglTampil: "31 Des 2018", besar: 1900000, saldo: 1791000, status: "macet" },
+    { id: "PM-6", nama: "Supardi, BA (II)", tanggal: "2018-12-31", tglTampil: "31 Des 2018", besar: 7800000, saldo: 6700000, status: "macet" },
+    { id: "PM-7", nama: "Lestari", tanggal: "2018-12-31", tglTampil: "31 Des 2018", besar: 8100000, saldo: 8100000, status: "macet" },
+    { id: "PM-8", nama: "Budiyatmo", tanggal: "2018-07-22", tglTampil: "22 Juli 2018", besar: 3000000, saldo: 1283000, status: "macet" },
+    { id: "PM-9", nama: "Kusmintarti", tanggal: "2010-07-11", tglTampil: "11 Juli 2010", besar: 4000000, saldo: 3721000, status: "macet" },
+    { id: "PM-10", nama: "Yuliwati", tanggal: "2009-11-15", tglTampil: "15 Nov 2009", besar: 2000000, saldo: 1321000, status: "macet" }
+  ],
+  jurnal: [
+    { tanggal: "2025-12-31", jenis: "Saldo Awal RAT", ket: "Posisi Saldo Akhir Laporan RAT Per 31 Des 2025", media: "Neraca", debet: 89656213, kredit: 89656213 },
+    { tanggal: "2025-12-31", jenis: "Pendapatan", ket: "Akumulasi Pendapatan Bunga Pinjaman RAT 2025", media: "Kas", debet: 1523000, kredit: 0 },
+    { tanggal: "2025-12-31", jenis: "Biaya", ket: "Akumulasi Biaya Organisasi RAT 2025", media: "Kas", debet: 0, kredit: 1052000 }
+  ]
+};
+
+// ==================== STATE & STORAGE ====================
+const STORAGE_KEY = "ksu_ngeksigondo_db_v3";
+const AUTH_KEY = "ksu_ngeksigondo_auth";
+const CLOUD_KEY = "ksu_ngeksigondo_cloud_cfg";
+
+let db = null;
+let currentSimpananTab = "aktif";
+let currentPinjamanTab = "lancar";
+
+function loadDatabase() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.neraca && parsed.anggotaAktif) {
+        db = parsed;
+        return;
+      }
+    }
+  } catch (e) {}
+  db = JSON.parse(JSON.stringify(SEED_DATA));
+  saveDatabase(false);
+}
+
+function saveDatabase(triggerCloud = true) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  if (triggerCloud) {
+    const cfg = getCloudConfig();
+    if (cfg.url && cfg.autoSync) {
+      pushToCloud(true);
+    }
+  }
+}
+
+// ==================== FORMATTER ====================
+function fmtRp(n) {
+  const num = Number(n) || 0;
+  return "Rp " + Math.round(num).toLocaleString("id-ID");
+}
+function fmtNum(n) {
+  const num = Number(n) || 0;
+  if (num === 0) return "-";
+  return num.toLocaleString("id-ID", { minimumFractionDigits: num % 1 !== 0 ? 2 : 0, maximumFractionDigits: 2 });
+}
+function fmtInt(n) {
+  const num = Number(n) || 0;
+  if (num === 0) return "-";
+  return Math.round(num).toLocaleString("id-ID");
+}
+function parseMoney(str) {
+  if (!str) return 0;
+  return parseInt(String(str).replace(/[^0-9]/g, ""), 10) || 0;
+}
+function showToast(msg, isError = false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.borderLeftColor = isError ? "#dc2626" : "#10b981";
+  t.classList.remove("hidden");
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.add("hidden"), 3500);
+}
+
+// Format input uang otomatis saat mengetik
+document.addEventListener("input", (e) => {
+  if (e.target.classList.contains("money-input")) {
+    const val = parseMoney(e.target.value);
+    e.target.value = val ? val.toLocaleString("id-ID") : "";
+  }
+});
+
+// ==================== LOGIN & AUTH ====================
+function getCredentials() {
+  const saved = JSON.parse(localStorage.getItem("ksu_creds") || "null");
+  return saved || { user: "admin", pass: "1234" };
+}
+
+function checkAuth() {
+  const isLogged = sessionStorage.getItem(AUTH_KEY) === "1" || localStorage.getItem(AUTH_KEY) === "1";
+  if (isLogged) {
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("appContainer").classList.remove("hidden");
+    initApp();
+  } else {
+    document.getElementById("loginScreen").classList.remove("hidden");
+    document.getElementById("appContainer").classList.add("hidden");
+  }
+}
+
+document.getElementById("togglePassBtn").addEventListener("click", () => {
+  const inp = document.getElementById("loginPass");
+  inp.type = inp.type === "password" ? "text" : "password";
+});
+
+document.getElementById("autoFillLogin").addEventListener("click", () => {
+  const creds = getCredentials();
+  document.getElementById("loginUser").value = creds.user;
+  document.getElementById("loginPass").value = creds.pass;
+});
+
+document.getElementById("loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const u = document.getElementById("loginUser").value.trim();
+  const p = document.getElementById("loginPass").value.trim();
+  const creds = getCredentials();
+  if (u === creds.user && p === creds.pass) {
+    if (document.getElementById("rememberMe").checked) {
+      localStorage.setItem(AUTH_KEY, "1");
+    } else {
+      sessionStorage.setItem(AUTH_KEY, "1");
+    }
+    document.getElementById("loginError").classList.add("hidden");
+    checkAuth();
+  } else {
+    const card = document.getElementById("loginCard");
+    document.getElementById("loginError").classList.remove("hidden");
+    card.classList.remove("shake");
+    void card.offsetWidth;
+    card.classList.add("shake");
+  }
+});
+
+function doLogout() {
+  localStorage.removeItem(AUTH_KEY);
+  sessionStorage.removeItem(AUTH_KEY);
+  checkAuth();
+}
+
+function updateCredentials() {
+  const u = document.getElementById("cfgUsername").value.trim();
+  const p = document.getElementById("cfgPassword").value.trim();
+  if (!u) return showToast("Username tidak boleh kosong", true);
+  const old = getCredentials();
+  localStorage.setItem("ksu_creds", JSON.stringify({ user: u, pass: p || old.pass }));
+  document.getElementById("cfgPassword").value = "";
+  showToast("Username & password berhasil diperbarui!");
+}
+
+// ==================== NAVIGASI ====================
+function switchPage(page) {
+  document.querySelectorAll(".page-sec").forEach(el => el.classList.add("hidden"));
+  const target = document.getElementById("page-" + page);
+  if (target) target.classList.remove("hidden");
+
+  document.querySelectorAll("#desktopNav .nav-item").forEach(el => {
+    el.classList.toggle("active", el.dataset.page === page);
+  });
+  document.querySelectorAll(".bottom-nav .bnav-btn").forEach(el => {
+    el.classList.toggle("active", el.dataset.page === page);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll("#desktopNav .nav-item, .bottom-nav .bnav-btn").forEach(btn => {
+  btn.addEventListener("click", () => switchPage(btn.dataset.page));
+});
+
+function openModal(id) {
+  const today = new Date().toISOString().split("T")[0];
+  document.querySelectorAll(`#${id} input[type="date"]`).forEach(inp => { if (!inp.value) inp.value = today; });
+  if (id === "modalSimpanan") populateAnggotaSelect();
+  if (id === "modalPinjamanBaru") populateAnggotaDatalist();
+  document.getElementById(id).classList.remove("hidden");
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add("hidden");
+}
+
+// ==================== PERHITUNGAN & RENDER ====================
+function calcSHU() {
+  const lr = db.labaRugi;
+  const totalPend = (lr.pendBungaPinjaman || 0) + (lr.pendAdm || 0) + (lr.pendBungaBank || 0) + (lr.pendLain || 0);
+  const totalBiaya = (lr.biayaAdmBank || 0) + (lr.biayaOrganisasi || 0);
+  return { totalPend, totalBiaya, shu: totalPend - totalBiaya };
+}
+
+function calcTotalAktiva() {
+  const n = db.neraca;
+  const sub1 = n.kas + n.bank + n.pinjamanAnggota + n.piutangAsuransi + n.piutangDagang + n.persediaanBatik;
+  const totInv = n.inventaris + n.pakaianJawa - n.akmPenyusutan;
+  return { sub1, totInv, total: sub1 + totInv };
+}
+
+function renderAll() {
+  renderDashboard();
+  renderSimpananTable();
+  renderPinjamanTable();
+  renderJurnal();
+  renderLaporan();
+}
+
+function renderDashboard() {
+  const n = db.neraca;
+  const { shu } = calcSHU();
+  const { total: totalAktiva } = calcTotalAktiva();
+
+  // Hitung total buku simpanan anggota
+  const allAgt = [...db.anggotaAktif, ...db.anggotaNonAktif];
+  let sumPokok = 0, sumWajib = 0, sumSukarela = 0, sumWP = 0, sumKhusus = 0, sumLain = 0;
+  allAgt.forEach(a => {
+    sumPokok += a.pokok || 0;
+    sumWajib += a.wajib || 0;
+    sumSukarela += a.sukarela || 0;
+    sumWP += a.wajibPinjam || 0;
+    sumKhusus += a.khusus || 0;
+    sumLain += a.lain || 0;
+  });
+  const totalBukuSimpanan = sumPokok + sumWajib + sumSukarela + sumWP + sumKhusus + sumLain;
+
+  document.getElementById("kpiKas").textContent = fmtRp(n.kas);
+  document.getElementById("kpiBank").textContent = fmtRp(n.bank);
+  document.getElementById("kpiPinjaman").textContent = fmtRp(n.pinjamanAnggota);
+  document.getElementById("kpiSimpanan").textContent = fmtRp(totalBukuSimpanan);
+  document.getElementById("kpiSimpananSub").textContent = `${db.anggotaAktif.length} Aktif • ${db.anggotaNonAktif.length} Tidak Aktif`;
+  document.getElementById("kpiShu").textContent = fmtRp(shu);
+  document.getElementById("dashTotalAktiva").textContent = "Total Aktiva: " + fmtRp(totalAktiva);
+
+  // Grafik Batang Komposisi Aktiva
+  const items = [
+    { label: "Pinjaman Anggota", val: n.pinjamanAnggota, color: "#0f766e" },
+    { label: "Saldo Bank", val: n.bank, color: "#0284c7" },
+    { label: "Piutang Dagang", val: n.piutangDagang, color: "#d97706" },
+    { label: "Persediaan Kain Batik", val: n.persediaanBatik, color: "#7c3aed" },
+    { label: "Kas Tunai", val: n.kas, color: "#16a34a" },
+    { label: "Inventaris Bersih", val: n.inventaris + n.pakaianJawa - n.akmPenyusutan, color: "#475569" }
+  ];
+  const maxVal = Math.max(...items.map(i => i.val), 1);
+  document.getElementById("chartContainer").innerHTML = items.map(it => {
+    const pct = Math.max(4, Math.round((it.val / maxVal) * 100));
+    return `
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">
+          <span style="font-weight:600;">${it.label}</span>
+          <span style="font-weight:700;">${fmtRp(it.val)}</span>
+        </div>
+        <div style="background:#f1f5f9;height:10px;border-radius:99px;overflow:hidden;">
+          <div style="width:${pct}%;background:${it.color};height:100%;border-radius:99px;"></div>
+        </div>
+      </div>`;
+  }).join("");
+
+  // Rekap 6 Simpanan
+  document.getElementById("dashSimpananRekap").innerHTML = `
+    <tr><td>Simpanan Pokok</td><td class="num bold">${fmtRp(sumPokok)}</td></tr>
+    <tr><td>Simpanan Wajib</td><td class="num bold">${fmtRp(sumWajib)}</td></tr>
+    <tr><td>Simpanan Sukarela</td><td class="num bold">${fmtRp(sumSukarela)}</td></tr>
+    <tr><td>Simp. Wajib Pinjam</td><td class="num bold">${fmtRp(sumWP)}</td></tr>
+    <tr><td>Simpanan Khusus</td><td class="num bold">${fmtRp(sumKhusus)}</td></tr>
+    <tr><td>Simpanan Lain-lain</td><td class="num bold">${fmtRp(sumLain)}</td></tr>
+    <tr class="total-row"><td>Gabungan Aktif & Tdk Aktif</td><td class="num">${fmtRp(totalBukuSimpanan)}</td></tr>
+  `;
+
+  // Jurnal Terbaru (5 terakhir)
+  const recent = [...db.jurnal].slice(-5).reverse();
+  document.getElementById("dashJurnalBody").innerHTML = recent.map(j => `
+    <tr>
+      <td>${j.tanggal}</td>
+      <td>${j.ket}</td>
+      <td><span class="pill pill-gray">${j.media}</span></td>
+      <td class="num" style="color:var(--success);font-weight:600;">${j.debet ? fmtInt(j.debet) : "-"}</td>
+      <td class="num" style="color:var(--danger);font-weight:600;">${j.kredit ? fmtInt(j.kredit) : "-"}</td>
+    </tr>
+  `).join("");
+}
+
+// ==================== RENDER SIMPANAN ANGGOTA ====================
+function setSimpananTab(tab) {
+  currentSimpananTab = tab;
+  document.getElementById("tabAnggotaAktif").classList.toggle("active", tab === "aktif");
+  document.getElementById("tabAnggotaNonAktif").classList.toggle("active", tab === "nonaktif");
+  renderSimpananTable();
+}
+
+function renderSimpananTable() {
+  document.getElementById("countAktif").textContent = db.anggotaAktif.length;
+  document.getElementById("countNonAktif").textContent = db.anggotaNonAktif.length;
+
+  const list = currentSimpananTab === "aktif" ? db.anggotaAktif : db.anggotaNonAktif;
+  const q = (document.getElementById("searchAnggota").value || "").toLowerCase();
+  const filtered = list.filter(a => a.nama.toLowerCase().includes(q) || String(a.no).includes(q));
+
+  let tPokok = 0, tWajib = 0, tSuk = 0, tWP = 0, tKhusus = 0, tLain = 0, tAll = 0;
+
+  const rows = filtered.map((a, idx) => {
+    const jml = (a.pokok || 0) + (a.wajib || 0) + (a.sukarela || 0) + (a.wajibPinjam || 0) + (a.khusus || 0) + (a.lain || 0);
+    tPokok += a.pokok || 0; tWajib += a.wajib || 0; tSuk += a.sukarela || 0;
+    tWP += a.wajibPinjam || 0; tKhusus += a.khusus || 0; tLain += a.lain || 0; tAll += jml;
+
+    return `
+      <tr>
+        <td>${idx + 1}</td>
+        <td><strong>${a.no}</strong></td>
+        <td><strong>${a.nama}</strong></td>
+        <td class="num">${fmtInt(a.pokok)}</td>
+        <td class="num">${fmtInt(a.wajib)}</td>
+        <td class="num">${fmtNum(a.sukarela)}</td>
+        <td class="num">${fmtInt(a.wajibPinjam)}</td>
+        <td class="num">${fmtInt(a.khusus)}</td>
+        <td class="num">${fmtInt(a.lain)}</td>
+        <td class="num bold">${fmtNum(jml)}</td>
+        <td class="no-print">
+          <button class="btn btn-primary btn-sm" onclick="quickSetorAnggota('${a.id}')">+ Setor</button>
+        </td>
+      </tr>`;
+  }).join("");
+
+  const totalRow = `
+    <tr class="total-row">
+      <td colspan="3">TOTAL (${filtered.length} Anggota)</td>
+      <td class="num">${fmtInt(tPokok)}</td>
+      <td class="num">${fmtInt(tWajib)}</td>
+      <td class="num">${fmtNum(tSuk)}</td>
+      <td class="num">${fmtInt(tWP)}</td>
+      <td class="num">${fmtInt(tKhusus)}</td>
+      <td class="num">${fmtInt(tLain)}</td>
+      <td class="num">${fmtNum(tAll)}</td>
+      <td class="no-print"></td>
+    </tr>`;
+
+  document.getElementById("simpananTableBody").innerHTML = rows + totalRow;
+}
+
+function populateAnggotaSelect() {
+  const sel = document.getElementById("simpAnggotaId");
+  const optAktif = db.anggotaAktif.map(a => `<option value="${a.id}">[Aktif #${a.no}] ${a.nama}</option>`).join("");
+  const optNon = db.anggotaNonAktif.map(a => `<option value="${a.id}">[Tdk Aktif #${a.no}] ${a.nama}</option>`).join("");
+  sel.innerHTML = `<optgroup label="Anggota Aktif">${optAktif}</optgroup><optgroup label="Anggota Tidak Aktif">${optNon}</optgroup>`;
+}
+
+function populateAnggotaDatalist() {
+  const dl = document.getElementById("daftarNamaAnggota");
+  const all = [...db.anggotaAktif, ...db.anggotaNonAktif];
+  dl.innerHTML = all.map(a => `<option value="${a.nama}">`).join("");
+}
+
+function quickSetorAnggota(id) {
+  openModal("modalSimpanan");
+  document.getElementById("simpAnggotaId").value = id;
+}
+
+// ==================== RENDER PINJAMAN & MACET ====================
+function setPinjamanTab(tab) {
+  currentPinjamanTab = tab;
+  document.getElementById("tabPinjLancar").classList.toggle("active", tab === "lancar");
+  document.getElementById("tabPinjMacet").classList.toggle("active", tab === "macet");
+  renderPinjamanTable();
+}
+
+function renderPinjamanTable() {
+  const lancar = db.pinjaman.filter(p => p.status === "lancar");
+  const macet = db.pinjaman.filter(p => p.status === "macet");
+
+  const totLancar = lancar.reduce((s, p) => s + (p.saldo || 0), 0);
+  const totMacet = macet.reduce((s, p) => s + (p.saldo || 0), 0);
+
+  document.getElementById("kpiPinjLancar").textContent = fmtRp(totLancar);
+  document.getElementById("subPinjLancar").textContent = `${lancar.length} rekening pinjaman`;
+  document.getElementById("kpiPinjMacet").textContent = fmtRp(totMacet);
+  document.getElementById("subPinjMacet").textContent = `${macet.length} rekening pinjaman macet`;
+  document.getElementById("kpiPinjNeraca").textContent = fmtRp(db.neraca.pinjamanAnggota);
+
+  document.getElementById("cntPinjLancar").textContent = lancar.length;
+  document.getElementById("cntPinjMacet").textContent = macet.length;
+
+  const list = currentPinjamanTab === "lancar" ? lancar : macet;
+  const q = (document.getElementById("searchPinjaman").value || "").toLowerCase();
+  const filtered = list.filter(p => p.nama.toLowerCase().includes(q));
+
+  let sumBesar = 0, sumSaldo = 0;
+  const rows = filtered.map((p, idx) => {
+    sumBesar += p.besar || 0;
+    sumSaldo += p.saldo || 0;
+    const isLunas = p.saldo <= 0;
+    const badge = isLunas
+      ? `<span class="pill pill-gray">Lunas</span>`
+      : (p.status === "lancar" ? `<span class="pill pill-green">Berjalan</span>` : `<span class="pill pill-red">Macet</span>`);
+
+    return `
+      <tr>
+        <td>${idx + 1}</td>
+        <td><strong>${p.nama}</strong></td>
+        <td>${p.tglTampil || p.tanggal}</td>
+        <td class="num">${fmtInt(p.besar)}</td>
+        <td class="num bold">${fmtInt(p.saldo)}</td>
+        <td>${badge}</td>
+        <td class="no-print">
+          ${!isLunas ? `<button class="btn btn-primary btn-sm" onclick="openAngsuranModal('${p.id}')">Bayar Angsuran</button>` : "-"}
+        </td>
+      </tr>`;
+  }).join("");
+
+  const totalRow = `
+    <tr class="total-row">
+      <td colspan="3">TOTAL (${filtered.length} Rekening)</td>
+      <td class="num">${fmtInt(sumBesar)}</td>
+      <td class="num">${fmtInt(sumSaldo)}</td>
+      <td colspan="2"></td>
+    </tr>`;
+
+  document.getElementById("pinjamanTableBody").innerHTML = rows + totalRow;
+}
+
+function openAngsuranModal(id) {
+  const p = db.pinjaman.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById("angPinjId").value = p.id;
+  document.getElementById("angNamaDisplay").textContent = p.nama;
+  document.getElementById("angSisaDisplay").textContent = fmtRp(p.saldo);
+  document.getElementById("angPokok").value = "";
+  document.getElementById("angBunga").value = "";
+  openModal("modalAngsuran");
+}
+
+// ==================== PROSES TRANSAKSI ====================
+function submitPinjamanBaru(e) {
+  e.preventDefault();
+  const nama = document.getElementById("pinjNama").value.trim();
+  const besar = parseMoney(document.getElementById("pinjJumlah").value);
+  const sumber = document.getElementById("pinjSumber").value;
+  const tanggal = document.getElementById("pinjTanggal").value;
+
+  if (!nama || besar <= 0) {
+    return showToast("Nama peminjam dan nominal harus diisi!", true);
+  }
+  if (sumber === "kas" && db.neraca.kas < besar) {
+    return showToast("Saldo Kas Tunai tidak mencukupi! Pilih sumber dana Bank atau tambah kas.", true);
+  }
+  if (sumber === "bank" && db.neraca.bank < besar) {
+    return showToast("Saldo Bank tidak mencukupi untuk pencairan ini!", true);
+  }
+
+  // Kurangi Kas/Bank, Tambah Pinjaman Anggota
+  if (sumber === "kas") db.neraca.kas -= besar;
+  else db.neraca.bank -= besar;
+
+  db.neraca.pinjamanAnggota += besar;
+
+  const idBaru = "P-" + Date.now();
+  db.pinjaman.unshift({
+    id: idBaru,
+    nama: nama,
+    tanggal: tanggal,
+    tglTampil: tanggal,
+    besar: besar,
+    saldo: besar,
+    status: "lancar"
+  });
+
+  db.jurnal.push({
+    tanggal,
+    jenis: "Pinjaman Baru",
+    ket: `Pencairan pinjaman a.n. ${nama}`,
+    media: sumber === "kas" ? "Kas" : "Bank",
+    debet: 0,
+    kredit: besar
+  });
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalPinjamanBaru");
+  document.getElementById("formPinjamanBaru").reset();
+  setPinjamanTab("lancar");
+  showToast(`Pinjaman Rp ${besar.toLocaleString("id-ID")} a.n. ${nama} berhasil dicairkan!`);
+}
+
+function submitAngsuran(e) {
+  e.preventDefault();
+  const id = document.getElementById("angPinjId").value;
+  const pokok = parseMoney(document.getElementById("angPokok").value);
+  const bunga = parseMoney(document.getElementById("angBunga").value);
+  const media = document.getElementById("angMedia").value;
+  const tanggal = document.getElementById("angTanggal").value;
+
+  const p = db.pinjaman.find(x => x.id === id);
+  if (!p) return;
+  if (pokok <= 0 && bunga <= 0) return showToast("Masukkan nominal pokok atau bunga!", true);
+  if (pokok > p.saldo) return showToast("Angsuran pokok melebihi sisa pinjaman!", true);
+
+  p.saldo -= pokok;
+  db.neraca.pinjamanAnggota = Math.max(0, db.neraca.pinjamanAnggota - pokok);
+
+  const totalMasuk = pokok + bunga;
+  if (media === "kas") db.neraca.kas += totalMasuk;
+  else db.neraca.bank += totalMasuk;
+
+  if (bunga > 0) {
+    db.labaRugi.pendBungaPinjaman += bunga;
+  }
+
+  db.jurnal.push({
+    tanggal,
+    jenis: "Angsuran",
+    ket: `Angsuran ${p.nama} (Pokok: ${fmtInt(pokok)}, Bunga: ${fmtInt(bunga)})`,
+    media: media === "kas" ? "Kas" : "Bank",
+    debet: totalMasuk,
+    kredit: 0
+  });
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalAngsuran");
+  showToast(`Angsuran ${p.nama} berhasil dicatat!`);
+}
+
+function submitSimpanan(e) {
+  e.preventDefault();
+  const id = document.getElementById("simpAnggotaId").value;
+  const arah = document.getElementById("simpArah").value;
+  const jenis = document.getElementById("simpJenis").value;
+  const nominal = parseMoney(document.getElementById("simpNominal").value);
+  const media = document.getElementById("simpMedia").value;
+  const tanggal = document.getElementById("simpTanggal").value;
+
+  if (nominal <= 0) return showToast("Nominal harus lebih dari 0!", true);
+
+  let agt = db.anggotaAktif.find(a => a.id === id) || db.anggotaNonAktif.find(a => a.id === id);
+  if (!agt) return;
+
+  const mapNeraca = {
+    pokok: "simpPokok",
+    wajib: "simpWajib",
+    sukarela: "simpSukarela",
+    wajibPinjam: "simpWajibPinjaman",
+    khusus: "simpKhusus",
+    lain: "simpLainLain"
+  };
+  const labelJenis = {
+    pokok: "Simp. Pokok", wajib: "Simp. Wajib", sukarela: "Simp. Sukarela",
+    wajibPinjam: "Simp. Wajib Pinjam", khusus: "Simp. Khusus", lain: "Simp. Lain-lain"
+  };
+
+  if (arah === "tarik") {
+    if ((agt[jenis] || 0) < nominal) return showToast(`Saldo ${labelJenis[jenis]} anggota tidak mencukupi!`, true);
+    if (media === "kas" && db.neraca.kas < nominal) return showToast("Saldo Kas Tunai tidak mencukupi!", true);
+    if (media === "bank" && db.neraca.bank < nominal) return showToast("Saldo Bank tidak mencukupi!", true);
+
+    agt[jenis] -= nominal;
+    db.neraca[mapNeraca[jenis]] = Math.max(0, (db.neraca[mapNeraca[jenis]] || 0) - nominal);
+    if (media === "kas") db.neraca.kas -= nominal; else db.neraca.bank -= nominal;
+
+    db.jurnal.push({
+      tanggal, jenis: "Penarikan",
+      ket: `Penarikan ${labelJenis[jenis]} a.n. ${agt.nama}`,
+      media: media === "kas" ? "Kas" : "Bank", debet: 0, kredit: nominal
+    });
+  } else {
+    agt[jenis] = (agt[jenis] || 0) + nominal;
+    db.neraca[mapNeraca[jenis]] = (db.neraca[mapNeraca[jenis]] || 0) + nominal;
+    if (media === "kas") db.neraca.kas += nominal; else db.neraca.bank += nominal;
+
+    db.jurnal.push({
+      tanggal, jenis: "Setoran",
+      ket: `Setoran ${labelJenis[jenis]} a.n. ${agt.nama}`,
+      media: media === "kas" ? "Kas" : "Bank", debet: nominal, kredit: 0
+    });
+  }
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalSimpanan");
+  document.getElementById("formSimpanan").reset();
+  showToast("Transaksi simpanan berhasil disimpan!");
+}
+
+function submitTambahAnggota(e) {
+  e.preventDefault();
+  const no = document.getElementById("agtBaruNo").value.trim();
+  const status = document.getElementById("agtBaruStatus").value;
+  const nama = document.getElementById("agtBaruNama").value.trim();
+  const pokok = parseMoney(document.getElementById("agtBaruPokok").value);
+
+  const baru = {
+    id: (status === "aktif" ? "A-" : "NA-") + Date.now(),
+    no, nama, pokok, wajib: 0, sukarela: 0, wajibPinjam: 0, khusus: 0, lain: 0
+  };
+  if (status === "aktif") db.anggotaAktif.push(baru);
+  else db.anggotaNonAktif.push(baru);
+
+  if (pokok > 0) {
+    db.neraca.simpPokok += pokok;
+    db.neraca.kas += pokok;
+    db.jurnal.push({
+      tanggal: new Date().toISOString().split("T")[0],
+      jenis: "Anggota Baru",
+      ket: `Setoran Simp. Pokok anggota baru: ${nama}`,
+      media: "Kas", debet: pokok, kredit: 0
+    });
+  }
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalTambahAnggota");
+  showToast(`Anggota ${nama} berhasil ditambahkan!`);
+}
+
+function submitPendapatanBiaya(e) {
+  e.preventDefault();
+  const akun = document.getElementById("pbAkun").value;
+  const nominal = parseMoney(document.getElementById("pbNominal").value);
+  const media = document.getElementById("pbMedia").value;
+  const ket = document.getElementById("pbKet").value.trim();
+  const tanggal = document.getElementById("pbTanggal").value;
+
+  if (nominal <= 0) return showToast("Nominal harus lebih dari 0!", true);
+  const isBiaya = akun.startsWith("biaya");
+
+  if (isBiaya) {
+    if (media === "kas" && db.neraca.kas < nominal) return showToast("Saldo Kas Tunai tidak cukup!", true);
+    if (media === "bank" && db.neraca.bank < nominal) return showToast("Saldo Bank tidak cukup!", true);
+    if (media === "kas") db.neraca.kas -= nominal; else db.neraca.bank -= nominal;
+    db.labaRugi[akun] += nominal;
+    db.jurnal.push({ tanggal, jenis: "Biaya", ket, media: media === "kas" ? "Kas" : "Bank", debet: 0, kredit: nominal });
+  } else {
+    if (media === "kas") db.neraca.kas += nominal; else db.neraca.bank += nominal;
+    db.labaRugi[akun] += nominal;
+    db.jurnal.push({ tanggal, jenis: "Pendapatan", ket, media: media === "kas" ? "Kas" : "Bank", debet: nominal, kredit: 0 });
+  }
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalPendapatanBiaya");
+  showToast("Transaksi berhasil dicatat!");
+}
+
+function submitMutasiKasBank(e) {
+  e.preventDefault();
+  const arah = document.getElementById("mkArah").value;
+  const nominal = parseMoney(document.getElementById("mkNominal").value);
+  const tanggal = document.getElementById("mkTanggal").value;
+
+  if (nominal <= 0) return showToast("Nominal tidak valid!", true);
+  if (arah === "kas_ke_bank") {
+    if (db.neraca.kas < nominal) return showToast("Saldo Kas Tunai tidak mencukupi!", true);
+    db.neraca.kas -= nominal;
+    db.neraca.bank += nominal;
+    db.jurnal.push({ tanggal, jenis: "Mutasi", ket: "Setor Kas Tunai ke Rekening Bank", media: "Kas → Bank", debet: nominal, kredit: nominal });
+  } else {
+    if (db.neraca.bank < nominal) return showToast("Saldo Bank tidak mencukupi!", true);
+    db.neraca.bank -= nominal;
+    db.neraca.kas += nominal;
+    db.jurnal.push({ tanggal, jenis: "Mutasi", ket: "Tarik Tunai dari Bank ke Kas", media: "Bank → Kas", debet: nominal, kredit: nominal });
+  }
+
+  saveDatabase(true);
+  renderAll();
+  closeModal("modalMutasiKasBank");
+  showToast("Mutasi Kas & Bank berhasil!");
+}
+
+// ==================== RENDER JURNAL & LAPORAN RAT ====================
+function renderJurnal() {
+  const list = [...db.jurnal].reverse();
+  document.getElementById("jurnalFullBody").innerHTML = list.map((j, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${j.tanggal}</td>
+      <td><span class="pill pill-amber">${j.jenis}</span></td>
+      <td>${j.ket}</td>
+      <td>${j.media}</td>
+      <td class="num" style="color:var(--success);font-weight:600;">${j.debet ? fmtInt(j.debet) : "-"}</td>
+      <td class="num" style="color:var(--danger);font-weight:600;">${j.kredit ? fmtInt(j.kredit) : "-"}</td>
+    </tr>
+  `).join("");
+}
+
+function setReportTab(tab) {
+  ["lr", "neraca", "lajur"].forEach(t => {
+    document.getElementById("report-" + t).classList.toggle("hidden", t !== tab);
+  });
+  document.getElementById("repTabLR").classList.toggle("active", tab === "lr");
+  document.getElementById("repTabNeraca").classList.toggle("active", tab === "neraca");
+  document.getElementById("repTabLajur").classList.toggle("active", tab === "lajur");
+}
+
+function renderLaporan() {
+  const lr = db.labaRugi;
+  const { totalPend, totalBiaya, shu } = calcSHU();
+
+  // 1. LABA RUGI (Hal. 1 PDF)
+  document.getElementById("tableLabaRugi").innerHTML = `
+    <tr class="rep-sec"><td colspan="3">PENDAPATAN</td></tr>
+    <tr><td>PENDAPATAN BUNGA PINJAMAN</td><td class="num"></td><td class="num">${fmtInt(lr.pendBungaPinjaman)}</td></tr>
+    <tr><td>PENDAPATAN ADM</td><td class="num"></td><td class="num">${fmtInt(lr.pendAdm)}</td></tr>
+    <tr><td>PENDAPATAN BUNGA BANK</td><td class="num"></td><td class="num">${fmtInt(lr.pendBungaBank)}</td></tr>
+    <tr><td>PENDAPATAN LAIN LAIN</td><td class="num"></td><td class="num">${fmtInt(lr.pendLain)}</td></tr>
+    <tr class="total-row"><td>TOTAL PENDAPATAN</td><td></td><td class="num">${fmtInt(totalPend)}</td></tr>
+    <tr class="rep-sec"><td colspan="3">BIAYA-BIAYA</td></tr>
+    <tr><td>BIAYA ADM BANK</td><td class="num">${fmtInt(lr.biayaAdmBank)}</td><td></td></tr>
+    <tr><td>BIAYA ORGANISASI</td><td class="num">${fmtInt(lr.biayaOrganisasi)}</td><td></td></tr>
+    <tr class="total-row"><td>TOTAL BIAYA</td><td class="num">${fmtInt(totalBiaya)}</td><td class="num">${fmtInt(totalBiaya)}</td></tr>
+    <tr class="total-row" style="background:#dcfce7 !important;"><td><strong>TOTAL LABA / SHU BERJALAN</strong></td><td></td><td class="num" style="color:#166534;"><strong>${fmtNum(shu)}</strong></td></tr>
+  `;
+
+  // 2. NERACA AKTIVA & PASIVA (Hal. 2 PDF)
+  const n = db.neraca;
+  const { sub1, totInv, total: totalAktiva } = calcTotalAktiva();
+
+  document.getElementById("tableNeracaAktiva").innerHTML = `
+    <tr><td>KAS</td><td class="num">${fmtInt(n.kas)}</td></tr>
+    <tr><td>BANK</td><td class="num">${fmtInt(n.bank)}</td></tr>
+    <tr><td>PINJAMAN ANGGOTA</td><td class="num">${fmtInt(n.pinjamanAnggota)}</td></tr>
+    <tr><td>PIUTANG ASURANSI ANGGOTA</td><td class="num">${fmtInt(n.piutangAsuransi)}</td></tr>
+    <tr><td>PIUTANG DAGANG</td><td class="num">${fmtInt(n.piutangDagang)}</td></tr>
+    <tr><td>PERSEDIAAN BARANG KAIN BATIK</td><td class="num">${fmtInt(n.persediaanBatik)}</td></tr>
+    <tr class="total-row"><td>SUBTOTAL AKTIVA LANCAR</td><td class="num">${fmtInt(sub1)}</td></tr>
+    <tr><td>INVENTARIS</td><td class="num">${fmtInt(n.inventaris)}</td></tr>
+    <tr><td>PAKAIAN JAWA</td><td class="num">${fmtInt(n.pakaianJawa)}</td></tr>
+    <tr><td>AKM. PENYUSUTAN (-)</td><td class="num">(${fmtInt(n.akmPenyusutan)})</td></tr>
+    <tr><td><strong>TOTAL INVENTARIS BERSIH</strong></td><td class="num bold">${fmtInt(totInv)}</td></tr>
+    <tr class="total-row"><td><strong>TOTAL AKTIVA</strong></td><td class="num"><strong>${fmtInt(totalAktiva)}</strong></td></tr>
+  `;
+
+  const subSimpDana = n.simpSukarela + n.simpLainLain + n.simpSukarelaNonAnggota + n.danaPegawai + n.danaPengurus + n.danaPendidikan + n.danaSosial + n.danaPembDaerah + n.utangDagang + n.hutangArisan + n.hutangPaguyuban + n.simpKasKopLama;
+  const subModal = n.simpKhusus + n.simpPokok + n.simpWajib + n.simpWajibPinjaman + n.sumbanganBpt + n.donasi + n.cadangan + n.shuBulanLalu + shu + n.jasaSimpanan + n.jasaAnggota;
+  const totalPasiva = subSimpDana + subModal;
+
+  document.getElementById("tableNeracaPasiva").innerHTML = `
+    <tr><td>SIMPANAN SUKARELA</td><td class="num">${fmtInt(n.simpSukarela)}</td></tr>
+    <tr><td>SIMPANAN LAIN-LAIN</td><td class="num">${fmtInt(n.simpLainLain)}</td></tr>
+    <tr><td>SIMPANAN SUKARELA NON ANGGOTA</td><td class="num">${fmtInt(n.simpSukarelaNonAnggota)}</td></tr>
+    <tr><td>DANA PEGAWAI/KARYAWAN</td><td class="num">${fmtInt(n.danaPegawai)}</td></tr>
+    <tr><td>DANA PENGURUS</td><td class="num">${fmtInt(n.danaPengurus)}</td></tr>
+    <tr><td>DANA PENDIDIKAN</td><td class="num">${fmtInt(n.danaPendidikan)}</td></tr>
+    <tr><td>DANA SOSIAL</td><td class="num">${fmtInt(n.danaSosial)}</td></tr>
+    <tr><td>DANA PEMB. DAERAH KERJA</td><td class="num">${fmtInt(n.danaPembDaerah)}</td></tr>
+    <tr><td>UTANG DAGANG</td><td class="num">${fmtInt(n.utangDagang)}</td></tr>
+    <tr><td>HUTANG ARISAN NGEKSIGONDO</td><td class="num">${fmtInt(n.hutangArisan)}</td></tr>
+    <tr><td>HUTANG PAG. NGEKSIGONDO</td><td class="num">${fmtInt(n.hutangPaguyuban)}</td></tr>
+    <tr><td>SIMPANAN KAS KOP. LAMA</td><td class="num">${fmtInt(n.simpKasKopLama)}</td></tr>
+    <tr class="rep-sec"><td>MODAL & EKUITAS</td><td class="num">${fmtInt(subModal)}</td></tr>
+    <tr><td>SIMPANAN KHUSUS</td><td class="num">${fmtInt(n.simpKhusus)}</td></tr>
+    <tr><td>SIMPANAN POKOK</td><td class="num">${fmtInt(n.simpPokok)}</td></tr>
+    <tr><td>SIMPANAN WAJIB</td><td class="num">${fmtInt(n.simpWajib)}</td></tr>
+    <tr><td>SIMPANAN WAJIB PINJAMAN</td><td class="num">${fmtInt(n.simpWajibPinjaman)}</td></tr>
+    <tr><td>SUMBANGAN BPT KLN PROGO</td><td class="num">${fmtInt(n.sumbanganBpt)}</td></tr>
+    <tr><td>DONASI</td><td class="num">${fmtInt(n.donasi)}</td></tr>
+    <tr><td>CADANGAN</td><td class="num">${fmtInt(n.cadangan)}</td></tr>
+    <tr><td>SHU BULAN BERJALAN</td><td class="num bold" style="color:var(--success);">${fmtInt(shu)}</td></tr>
+    <tr><td>JASA SIMPANAN</td><td class="num">${fmtInt(n.jasaSimpanan)}</td></tr>
+    <tr><td>JASA ANGGOTA</td><td class="num">${fmtInt(n.jasaAnggota)}</td></tr>
+    <tr class="total-row"><td><strong>TOTAL PASIVA</strong></td><td class="num"><strong>${fmtInt(totalPasiva)}</strong></td></tr>
+  `;
+
+  // 3. NERACA LAJUR RINGKAS (Hal. 3 PDF)
+  const rowsLajur = [
+    ["KAS", 1191175.50, 0, n.kas, 0, 0, 0, n.kas, 0],
+    ["BANK", 4166487.80, 0, n.bank, 0, 0, 0, n.bank, 0],
+    ["PINJAMAN ANGGOTA", 80740000, 0, n.pinjamanAnggota, 0, 0, 0, n.pinjamanAnggota, 0],
+    ["PIUTANG DAGANG", 3946000, 0, n.piutangDagang, 0, 0, 0, n.piutangDagang, 0],
+    ["PERSEDIAAN BARANG KAIN BATIK", 1650100, 0, n.persediaanBatik, 0, 0, 0, n.persediaanBatik, 0],
+    ["INVENTARIS", 1951500, 0, n.inventaris, 0, 0, 0, n.inventaris, 0],
+    ["PAKAIAN JAWA", 250000, 0, n.pakaianJawa, 0, 0, 0, n.pakaianJawa, 0],
+    ["AKM. PENYUSUTAN", 0, 1590000, 0, n.akmPenyusutan, 0, 0, 0, n.akmPenyusutan],
+    ["UTANG DAGANG & LAINNYA", 0, 1407700, 0, 1407700, 0, 0, 0, 1407700],
+    ["SIMPANAN SUKARELA", 0, 20579779.94, 0, n.simpSukarela, 0, 0, 0, n.simpSukarela],
+    ["SIMPANAN LAIN-LAIN", 0, 2908865.79, 0, n.simpLainLain, 0, 0, 0, n.simpLainLain],
+    ["DANA-DANA KOPERASI", 0, 7655674.19, 0, 7731604, 0, 0, 0, 7731604],
+    ["SIMPANAN KHUSUS", 0, 6935000, 0, n.simpKhusus, 0, 0, 0, n.simpKhusus],
+    ["SIMPANAN POKOK", 0, 4046000, 0, n.simpPokok, 0, 0, 0, n.simpPokok],
+    ["SIMPANAN WAJIB", 0, 15342500, 0, n.simpWajib, 0, 0, 0, n.simpWajib],
+    ["SIMPANAN WAJIB PINJAMAN", 0, 4254133, 0, n.simpWajibPinjaman, 0, 0, 0, n.simpWajibPinjaman],
+    ["SUMBANGAN, DONASI & CADANGAN", 0, 16719530.49, 0, 16303070, 0, 0, 0, 16303070],
+    ["JASA SIMPANAN & JASA ANGGOTA", 0, 11620679.42, 0, 11996609, 0, 0, 0, 11996609],
+    ["PENDAPATAN BUNGA PINJAMAN", 0, 0, 0, lr.pendBungaPinjaman, 0, lr.pendBungaPinjaman, 0, 0],
+    ["BIAYA ORGANISASI & ADM", 0, 0, totalBiaya, 0, totalBiaya, 0, 0, 0],
+    ["SHU BERJALAN", 0, 0, 0, shu, shu, 0, 0, shu]
+  ];
+
+  document.getElementById("tableNeracaLajur").innerHTML = `
+    <thead>
+      <tr>
+        <th rowspan="2">Uraian Akun</th>
+        <th colspan="2" style="text-align:center;">Neraca Awal</th>
+        <th colspan="2" style="text-align:center;">Neraca Setelah Adj</th>
+        <th colspan="2" style="text-align:center;">Laba Rugi</th>
+        <th colspan="2" style="text-align:center;">Neraca Akhir</th>
+      </tr>
+      <tr>
+        <th class="num">Debet</th><th class="num">Kredit</th>
+        <th class="num">Debet</th><th class="num">Kredit</th>
+        <th class="num">Debet</th><th class="num">Kredit</th>
+        <th class="num">Debet</th><th class="num">Kredit</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rowsLajur.map(r => `
+        <tr>
+          <td><strong>${r[0]}</strong></td>
+          <td class="num">${fmtInt(r[1])}</td><td class="num">${fmtInt(r[2])}</td>
+          <td class="num">${fmtInt(r[3])}</td><td class="num">${fmtInt(r[4])}</td>
+          <td class="num">${fmtInt(r[5])}</td><td class="num">${fmtInt(r[6])}</td>
+          <td class="num">${fmtInt(r[7])}</td><td class="num">${fmtInt(r[8])}</td>
+        </tr>
+      `).join("")}
+    </tbody>
+  `;
+}
+
+// ==================== DATABASE CLOUD (GOOGLE SHEETS) ====================
+function getCloudConfig() {
+  try {
+    return JSON.parse(localStorage.getItem(CLOUD_KEY)) || { url: "", autoSync: true };
+  } catch (e) {
+    return { url: "", autoSync: true };
+  }
+}
+
+function updateCloudUI(statusText = null, online = null) {
+  const cfg = getCloudConfig();
+  document.getElementById("cloudUrlInput").value = cfg.url || "";
+  document.getElementById("autoSyncCheck").checked = cfg.autoSync !== false;
+
+  const isConnected = online !== null ? online : Boolean(cfg.url);
+  const label = statusText || (cfg.url ? "Terhubung Google Sheets" : "Lokal Browser");
+
+  document.getElementById("dashCloudDot").classList.toggle("online", isConnected);
+  document.getElementById("dashCloudText").textContent = label;
+  document.getElementById("cfgCloudDot").classList.toggle("online", isConnected);
+  document.getElementById("cfgCloudLabel").textContent = cfg.url ? label : "Belum Terhubung";
+}
+
+function saveCloudUrl() {
+  const url = document.getElementById("cloudUrlInput").value.trim();
+  const autoSync = document.getElementById("autoSyncCheck").checked;
+  localStorage.setItem(CLOUD_KEY, JSON.stringify({ url, autoSync }));
+  updateCloudUI();
+  if (url) {
+    showToast("URL Google Sheets disimpan! Mengirim data awal...");
+    pushToCloud(false);
+  } else {
+    showToast("URL Cloud dihapus. Menggunakan penyimpanan lokal.");
+  }
+}
+
+function toggleAutoSync() {
+  const cfg = getCloudConfig();
+  cfg.autoSync = document.getElementById("autoSyncCheck").checked;
+  localStorage.setItem(CLOUD_KEY, JSON.stringify(cfg));
+}
+
+async function pushToCloud(silent = false) {
+  const cfg = getCloudConfig();
+  if (!cfg.url) {
+    if (!silent) showToast("Masukkan URL Web App Google Script terlebih dahulu!", true);
+    return;
+  }
+  updateCloudUI("Menyimpan ke Cloud...", true);
+  try {
+    await fetch(cfg.url, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(db)
+    });
+    updateCloudUI("Tersinkron Cloud ✓", true);
+    if (!silent) showToast("Database berhasil disimpan ke Google Sheets!");
+  } catch (err) {
+    updateCloudUI("Gagal Sinkron Cloud", false);
+    if (!silent) showToast("Gagal mengirim data ke Google Sheets. Periksa koneksi internet.", true);
+  }
+}
+
+async function pullFromCloud() {
+  const cfg = getCloudConfig();
+  if (!cfg.url) return showToast("Masukkan URL Web App Google Script terlebih dahulu!", true);
+  updateCloudUI("Mengambil dari Cloud...", true);
+  try {
+    const res = await fetch(cfg.url);
+    const data = await res.json();
+    if (data && data.neraca && data.anggotaAktif) {
+      db = data;
+      saveDatabase(false);
+      renderAll();
+      updateCloudUI("Tersinkron Cloud ✓", true);
+      showToast("Data terbaru berhasil ditarik dari Google Sheets!");
+    } else {
+      updateCloudUI("Cloud Masih Kosong", true);
+      showToast("Google Sheet masih kosong. Klik 'Simpan Data ke Cloud Sekarang' untuk mengisi data awal.", true);
+    }
+  } catch (err) {
+    updateCloudUI("Gagal Tarik Cloud", false);
+    showToast("Gagal mengambil data dari Google Sheets. Pastikan akses Web App disetel ke 'Anyone'.", true);
+  }
+}
+
+// ==================== BACKUP JSON & RESET ====================
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Backup_KSU_Ngeksigondo_${new Date().toISOString().split("T")[0]}.json`;
+  a.click();
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (parsed && parsed.neraca && parsed.anggotaAktif) {
+        db = parsed;
+        saveDatabase(true);
+        renderAll();
+        showToast("Backup JSON berhasil dipulihkan!");
+      } else {
+        showToast("Format file JSON tidak valid!", true);
+      }
+    } catch (err) {
+      showToast("Gagal membaca file backup!", true);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetToRAT2025() {
+  if (!confirm("Yakin ingin mereset seluruh angka ke posisi awal Laporan RAT 31 Desember 2025?")) return;
+  db = JSON.parse(JSON.stringify(SEED_DATA));
+  saveDatabase(true);
+  renderAll();
+  showToast("Data berhasil dikembalikan ke posisi awal RAT 31 Desember 2025!");
+}
+
+// ==================== INIT ====================
+function initApp() {
+  loadDatabase();
+  updateCloudUI();
+  renderAll();
+}
+
+checkAuth();
+</script>
+</body>
+</html>
