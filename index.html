@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>KSU NGEKSIGONDO - Sistem Pembukuan & Laporan RAT</title>
+  <title>SIMPAN PINJAM NGEKSIGONDO - Sistem Pembukuan & Laporan RAT</title>
   <style>
     :root {
       --primary: #0f766e;
@@ -37,7 +37,7 @@
     .login-card {
       background: #fff;
       width: 100%;
-      max-width: 400px;
+      max-width: 410px;
       border-radius: 16px;
       padding: 28px 24px;
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.25);
@@ -46,9 +46,9 @@
       width: 52px; height: 52px; border-radius: 14px;
       background: var(--primary); color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-size: 24px; font-weight: 800; margin: 0 auto 12px;
+      font-size: 22px; font-weight: 800; margin: 0 auto 12px;
     }
-    .login-card h1 { text-align: center; font-size: 19px; color: var(--secondary); font-weight: 800; }
+    .login-card h1 { text-align: center; font-size: 18px; color: var(--secondary); font-weight: 800; letter-spacing: 0.3px; }
     .login-card p.sub { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 20px; }
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
@@ -88,7 +88,7 @@
     /* APP LAYOUT */
     .app-shell { display: flex; min-height: 100vh; }
     .sidebar {
-      width: 260px; background: var(--secondary); color: #e2e8f0;
+      width: 265px; background: var(--secondary); color: #e2e8f0;
       display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0;
       z-index: 40; padding: 18px 14px; overflow-y: auto;
     }
@@ -97,7 +97,7 @@
       width: 38px; height: 38px; border-radius: 10px; background: var(--primary);
       display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 18px; flex-shrink: 0;
     }
-    .brand-title { font-weight: 800; font-size: 14.5px; color: #fff; letter-spacing: 0.3px; }
+    .brand-title { font-weight: 800; font-size: 13.5px; color: #fff; letter-spacing: 0.2px; line-height: 1.25; }
     .brand-sub { font-size: 11px; color: #94a3b8; }
     .nav-list { list-style: none; margin-top: 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
     .nav-item {
@@ -113,7 +113,7 @@
     }
     .sidebar-info strong { color: #5eead4; display: block; margin-bottom: 2px; }
 
-    .main-area { flex: 1; margin-left: 260px; padding: 22px 24px 40px; max-width: 100%; }
+    .main-area { flex: 1; margin-left: 265px; padding: 22px 24px 40px; max-width: 100%; }
     .mobile-topbar {
       display: none; position: sticky; top: 0; z-index: 35;
       background: var(--secondary); color: #fff; padding: 10px 14px;
@@ -270,8 +270,8 @@
 <!-- ==================== HALAMAN LOGIN ==================== -->
 <div id="loginScreen">
   <div class="login-card" id="loginCard">
-    <div class="login-logo">K</div>
-    <h1>KSU NGEKSIGONDO</h1>
+    <div class="login-logo">SP</div>
+    <h1>SIMPAN PINJAM NGEKSIGONDO</h1>
     <p class="sub">Sistem Pembukuan Simpan Pinjam & Laporan RAT</p>
     <div id="loginError" class="login-err hidden">Username atau password salah. Gunakan <b>admin</b> / <b>1234</b>.</div>
     <form id="loginForm">
@@ -304,7 +304,7 @@
     <div class="brand">
       <div class="brand-icon">🏛️</div>
       <div>
-        <div class="brand-title">KSU NGEKSIGONDO</div>
+        <div class="brand-title">SIMPAN PINJAM NGEKSIGONDO</div>
         <div class="brand-sub">Sistem Pembukuan & RAT</div>
       </div>
     </div>
@@ -322,7 +322,7 @@
 
     <div class="sidebar-info">
       <strong>📅 Basis Saldo RAT 2025</strong>
-      Saldo awal mengacu pada Laporan RAT KSU Ngeksigondo per 31 Desember 2025.
+      Saldo awal mengacu pada Laporan RAT Simpan Pinjam Ngeksigondo per 31 Desember 2025.
     </div>
 
     <button class="btn btn-outline btn-block" style="background:rgba(220,38,38,0.15);color:#fca5a5;border-color:rgba(220,38,38,0.35);" onclick="doLogout()">🚪 Keluar (Logout)</button>
@@ -333,7 +333,7 @@
     <div style="display:flex;align-items:center;gap:8px;">
       <span style="font-size:18px;">🏛️</span>
       <div>
-        <div style="font-weight:800;font-size:13.5px;">KSU NGEKSIGONDO</div>
+        <div style="font-weight:800;font-size:12.5px;">SIMPAN PINJAM NGEKSIGONDO</div>
         <div style="font-size:10px;color:#94a3b8;">Pembukuan & RAT 2025</div>
       </div>
     </div>
@@ -350,7 +350,7 @@
     <section id="page-dashboard" class="page-sec">
       <div class="page-header">
         <div>
-          <h2>Dashboard KSU NGEKSIGONDO</h2>
+          <h2>Dashboard SIMPAN PINJAM NGEKSIGONDO</h2>
           <p>Ikhtisar posisi keuangan, simpanan anggota, pinjaman, dan SHU</p>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -482,7 +482,7 @@
       <div class="page-header">
         <div>
           <h2>Pinjaman & Angsuran</h2>
-          <p>Daftar Pemberian Pinjaman Lancar & Pinjaman Macet KSU Ngeksigondo</p>
+          <p>Daftar Pemberian Pinjaman Lancar & Pinjaman Macet Simpan Pinjam Ngeksigondo</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="btn btn-accent" onclick="openModal('modalPinjamanBaru')">+ Pinjaman Baru</button>
@@ -572,7 +572,7 @@
     <!-- ==================== 5. LAPORAN RAT ==================== -->
     <section id="page-laporan" class="page-sec hidden">
       <div class="print-header">
-        <h2>KOPERASI SERBA USAHA (KSU) "NGEKSIGONDO"</h2>
+        <h2>SIMPAN PINJAM NGEKSIGONDO</h2>
         <p>LAPORAN PERTANGGUNGJAWABAN PENGURUS — POSISI PER 31 DESEMBER 2025</p>
       </div>
 
@@ -594,7 +594,7 @@
       <div id="report-lr" class="card">
         <div style="text-align:center;margin-bottom:14px;">
           <h3 style="font-size:16px;font-weight:800;">LAPORAN LABA RUGI</h3>
-          <div style="font-weight:700;color:var(--primary-dark);">KSU NGEKSIGONDO</div>
+          <div style="font-weight:700;color:var(--primary-dark);">SIMPAN PINJAM NGEKSIGONDO</div>
           <div style="font-size:12px;color:var(--muted);">PER 31 DESEMBER 2025</div>
         </div>
         <div class="table-wrap" style="max-width:650px;margin:0 auto;">
@@ -606,7 +606,7 @@
       <div id="report-neraca" class="card hidden">
         <div style="text-align:center;margin-bottom:14px;">
           <h3 style="font-size:16px;font-weight:800;">NERACA</h3>
-          <div style="font-weight:700;color:var(--primary-dark);">KSU NGEKSIGONDO</div>
+          <div style="font-weight:700;color:var(--primary-dark);">SIMPAN PINJAM NGEKSIGONDO</div>
           <div style="font-size:12px;color:var(--muted);">PER 31 DESEMBER 2025</div>
         </div>
         <div class="neraca-grid">
@@ -625,7 +625,7 @@
       <div id="report-lajur" class="card hidden">
         <div style="text-align:center;margin-bottom:14px;">
           <h3 style="font-size:16px;font-weight:800;">NERACA LAJUR</h3>
-          <div style="font-weight:700;color:var(--primary-dark);">KSU NGEKSIGONDO — PER 31 DESEMBER 2025</div>
+          <div style="font-weight:700;color:var(--primary-dark);">SIMPAN PINJAM NGEKSIGONDO — PER 31 DESEMBER 2025</div>
         </div>
         <div class="table-wrap">
           <table id="tableNeracaLajur" style="font-size:11.5px;"></table>
@@ -634,7 +634,7 @@
 
       <div class="print-sign">
         <div>
-          <p>Mengetahui,<br>Ketua KSU Ngeksigondo</p>
+          <p>Mengetahui,<br>Ketua Simpan Pinjam Ngeksigondo</p>
           <br><br><br>
           <p><strong>( ........................................ )</strong></p>
         </div>
@@ -660,7 +660,7 @@
         <div class="card-header">
           <div>
             <div class="card-title">☁️ Database Cloud (Google Sheets)</div>
-            <div style="font-size:12px;color:var(--muted);">Simpan & sinkronkan seluruh database koperasi ke Google Sheet milik Anda</div>
+            <div style="font-size:12px;color:var(--muted);">Simpan & sinkronkan seluruh database Simpan Pinjam Ngeksigondo ke Google Sheet</div>
           </div>
           <span class="cloud-pill" id="cfgCloudBadge"><span class="dot" id="cfgCloudDot"></span> <span id="cfgCloudLabel">Belum Terhubung</span></span>
         </div>
@@ -685,13 +685,13 @@
           <summary style="font-weight:700;cursor:pointer;color:var(--primary-dark);">📋 Lihat Kode Google Apps Script (Untuk Ditempel di Spreadsheet)</summary>
           <p style="margin:8px 0;color:var(--muted);">Buka Google Sheet Anda → klik <b>Extensions &gt; Apps Script</b> → tempel kode di bawah ini → klik <b>Deploy &gt; New deployment &gt; Web app</b> (Who has access: <b>Anyone</b>):</p>
           <pre style="background:#0f172a;color:#e2e8f0;padding:10px;border-radius:8px;overflow-x:auto;font-size:11.5px;">function doGet(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
   var val = sheet.getRange('A1').getValue();
   return ContentService.createTextOutput(val || '{}').setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
   var data = e.postData.contents;
   sheet.getRange('A1').setValue(data);
   sheet.getRange('A2').setValue('Terakhir disimpan: ' + new Date());
@@ -1029,12 +1029,10 @@ function doPost(e) {
 // ==================== SEED DATA LENGKAP RAT 31 DESEMBER 2025 ====================
 const SEED_DATA = {
   meta: {
-    namaKoperasi: "KSU NGEKSIGONDO",
+    namaKoperasi: "SIMPAN PINJAM NGEKSIGONDO",
     periode: "PER 31 DESEMBER 2025"
   },
-  // Saldo Neraca & Laba Rugi (Sesuai Laporan RAT 31 Des 2025)
   neraca: {
-    // AKTIVA
     kas: 1354125,
     bank: 9161488,
     pinjamanAnggota: 72933000,
@@ -1044,7 +1042,6 @@ const SEED_DATA = {
     inventaris: 1951500,
     pakaianJawa: 250000,
     akmPenyusutan: 1590000,
-    // PASIVA - SIMPANAN & DANA
     simpSukarela: 19486035,
     simpLainLain: 2771561,
     simpSukarelaNonAnggota: 0,
@@ -1053,12 +1050,10 @@ const SEED_DATA = {
     danaPendidikan: 3411756,
     danaSosial: 1933099,
     danaPembDaerah: 263378,
-    // PASIVA - UTANG
     utangDagang: 48500,
     hutangArisan: 928500,
     hutangPaguyuban: 700,
     simpKasKopLama: 430000,
-    // PASIVA - MODAL
     simpKhusus: 6525000,
     simpPokok: 3896000,
     simpWajib: 14833500,
@@ -1078,7 +1073,6 @@ const SEED_DATA = {
     biayaAdmBank: 0,
     biayaOrganisasi: 1052000
   },
-  // 25 ANGGOTA AKTIF (Hal. 5 PDF)
   anggotaAktif: [
     { id: "A-1", no: "1", nama: "Susanto", pokok: 50000, wajib: 370800, sukarela: 222649.76, wajibPinjam: 166500, khusus: 170000, lain: 165400 },
     { id: "A-5", no: "5", nama: "H. Eko Mulyono", pokok: 50000, wajib: 108600, sukarela: 657359.39, wajibPinjam: 20500, khusus: 160000, lain: 125000 },
@@ -1106,7 +1100,6 @@ const SEED_DATA = {
     { id: "A-119", no: "119", nama: "Kurnia Widyaningrum", pokok: 100000, wajib: 60000, sukarela: 36500, wajibPinjam: 54000, khusus: 50000, lain: 0 },
     { id: "A-120", no: "120", nama: "Paulus Ngatiman, M.Hum, M.Pd", pokok: 50000, wajib: 60000, sukarela: 450000, wajibPinjam: 30000, khusus: 100000, lain: 0 }
   ],
-  // 34 ANGGOTA TIDAK AKTIF (Hal. 6 PDF)
   anggotaNonAktif: [
     { id: "NA-2", no: "2", nama: "Drs. Sudiyarto", pokok: 50000, wajib: 251600, sukarela: 85392.60, wajibPinjam: 41500, khusus: 180000, lain: 73200 },
     { id: "NA-3", no: "3", nama: "Supardi, BA", pokok: 100000, wajib: 76100, sukarela: 1358.24, wajibPinjam: 103000, khusus: 10000, lain: 10328 },
@@ -1143,7 +1136,6 @@ const SEED_DATA = {
     { id: "NA-114", no: "114", nama: "Yoel Singgih Pramono", pokok: 50000, wajib: 190000, sukarela: 18875.65, wajibPinjam: 50000, khusus: 100000, lain: 50000 },
     { id: "NA-115", no: "115", nama: "H. Salim, SH", pokok: 50000, wajib: 60000, sukarela: 0, wajibPinjam: 0, khusus: 100000, lain: 50000 }
   ],
-  // 6 PINJAMAN LANCAR & 10 PINJAMAN MACET (Hal. 4 PDF)
   pinjaman: [
     { id: "P-1", nama: "Yustinus S.", tanggal: "2024-12-22", tglTampil: "22 Des 2024", besar: 4500000, saldo: 3600000, status: "lancar" },
     { id: "P-2", nama: "Paulus N.", tanggal: "2024-08-15", tglTampil: "15 Agust 2024", besar: 3000000, saldo: 2400000, status: "lancar" },
@@ -1151,7 +1143,6 @@ const SEED_DATA = {
     { id: "P-4", nama: "Rinto Widyarto", tanggal: "2022-10-21", tglTampil: "21 Okt 2022", besar: 10700000, saldo: 10700000, status: "lancar" },
     { id: "P-5", nama: "Ny. Yuwono", tanggal: "2020-05-08", tglTampil: "8 Mei 2020", besar: 10000000, saldo: 7400000, status: "lancar" },
     { id: "P-6", nama: "Kurnia W.", tanggal: "2020-03-31", tglTampil: "31 Mart 2020", besar: 5400000, saldo: 3950000, status: "lancar" },
-    // Pinjaman Macet
     { id: "PM-1", nama: "Supardi, BA", tanggal: "2022-09-25", tglTampil: "25 Sept 2022", besar: 7500000, saldo: 4800000, status: "macet" },
     { id: "PM-2", nama: "Bagus Ristanto", tanggal: "2022-03-13", tglTampil: "13 Mart 2022", besar: 1500000, saldo: 370000, status: "macet" },
     { id: "PM-3", nama: "Mamiek Sukamto", tanggal: "2018-12-31", tglTampil: "31 Des 2018", besar: 3500000, saldo: 3300000, status: "macet" },
@@ -1171,9 +1162,9 @@ const SEED_DATA = {
 };
 
 // ==================== STATE & STORAGE ====================
-const STORAGE_KEY = "ksu_ngeksigondo_db_v3";
-const AUTH_KEY = "ksu_ngeksigondo_auth";
-const CLOUD_KEY = "ksu_ngeksigondo_cloud_cfg";
+const STORAGE_KEY = "sp_ngeksigondo_db_v3";
+const AUTH_KEY = "sp_ngeksigondo_auth";
+const CLOUD_KEY = "sp_ngeksigondo_cloud_cfg";
 
 let db = null;
 let currentSimpananTab = "aktif";
@@ -1181,10 +1172,11 @@ let currentPinjamanTab = "lancar";
 
 function loadDatabase() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("ksu_ngeksigondo_db_v3");
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.neraca && parsed.anggotaAktif) {
+        parsed.meta = { namaKoperasi: "SIMPAN PINJAM NGEKSIGONDO", periode: "PER 31 DESEMBER 2025" };
         db = parsed;
         return;
       }
@@ -1232,7 +1224,6 @@ function showToast(msg, isError = false) {
   window._toastTimer = setTimeout(() => t.classList.add("hidden"), 3500);
 }
 
-// Format input uang otomatis saat mengetik
 document.addEventListener("input", (e) => {
   if (e.target.classList.contains("money-input")) {
     const val = parseMoney(e.target.value);
@@ -1242,7 +1233,7 @@ document.addEventListener("input", (e) => {
 
 // ==================== LOGIN & AUTH ====================
 function getCredentials() {
-  const saved = JSON.parse(localStorage.getItem("ksu_creds") || "null");
+  const saved = JSON.parse(localStorage.getItem("sp_creds") || localStorage.getItem("ksu_creds") || "null");
   return saved || { user: "admin", pass: "1234" };
 }
 
@@ -1302,7 +1293,7 @@ function updateCredentials() {
   const p = document.getElementById("cfgPassword").value.trim();
   if (!u) return showToast("Username tidak boleh kosong", true);
   const old = getCredentials();
-  localStorage.setItem("ksu_creds", JSON.stringify({ user: u, pass: p || old.pass }));
+  localStorage.setItem("sp_creds", JSON.stringify({ user: u, pass: p || old.pass }));
   document.getElementById("cfgPassword").value = "";
   showToast("Username & password berhasil diperbarui!");
 }
@@ -1365,7 +1356,6 @@ function renderDashboard() {
   const { shu } = calcSHU();
   const { total: totalAktiva } = calcTotalAktiva();
 
-  // Hitung total buku simpanan anggota
   const allAgt = [...db.anggotaAktif, ...db.anggotaNonAktif];
   let sumPokok = 0, sumWajib = 0, sumSukarela = 0, sumWP = 0, sumKhusus = 0, sumLain = 0;
   allAgt.forEach(a => {
@@ -1386,7 +1376,6 @@ function renderDashboard() {
   document.getElementById("kpiShu").textContent = fmtRp(shu);
   document.getElementById("dashTotalAktiva").textContent = "Total Aktiva: " + fmtRp(totalAktiva);
 
-  // Grafik Batang Komposisi Aktiva
   const items = [
     { label: "Pinjaman Anggota", val: n.pinjamanAnggota, color: "#0f766e" },
     { label: "Saldo Bank", val: n.bank, color: "#0284c7" },
@@ -1410,7 +1399,6 @@ function renderDashboard() {
       </div>`;
   }).join("");
 
-  // Rekap 6 Simpanan
   document.getElementById("dashSimpananRekap").innerHTML = `
     <tr><td>Simpanan Pokok</td><td class="num bold">${fmtRp(sumPokok)}</td></tr>
     <tr><td>Simpanan Wajib</td><td class="num bold">${fmtRp(sumWajib)}</td></tr>
@@ -1421,7 +1409,6 @@ function renderDashboard() {
     <tr class="total-row"><td>Gabungan Aktif & Tdk Aktif</td><td class="num">${fmtRp(totalBukuSimpanan)}</td></tr>
   `;
 
-  // Jurnal Terbaru (5 terakhir)
   const recent = [...db.jurnal].slice(-5).reverse();
   document.getElementById("dashJurnalBody").innerHTML = recent.map(j => `
     <tr>
@@ -1600,7 +1587,6 @@ function submitPinjamanBaru(e) {
     return showToast("Saldo Bank tidak mencukupi untuk pencairan ini!", true);
   }
 
-  // Kurangi Kas/Bank, Tambah Pinjaman Anggota
   if (sumber === "kas") db.neraca.kas -= besar;
   else db.neraca.bank -= besar;
 
@@ -1847,7 +1833,6 @@ function renderLaporan() {
   const lr = db.labaRugi;
   const { totalPend, totalBiaya, shu } = calcSHU();
 
-  // 1. LABA RUGI (Hal. 1 PDF)
   document.getElementById("tableLabaRugi").innerHTML = `
     <tr class="rep-sec"><td colspan="3">PENDAPATAN</td></tr>
     <tr><td>PENDAPATAN BUNGA PINJAMAN</td><td class="num"></td><td class="num">${fmtInt(lr.pendBungaPinjaman)}</td></tr>
@@ -1862,7 +1847,6 @@ function renderLaporan() {
     <tr class="total-row" style="background:#dcfce7 !important;"><td><strong>TOTAL LABA / SHU BERJALAN</strong></td><td></td><td class="num" style="color:#166534;"><strong>${fmtNum(shu)}</strong></td></tr>
   `;
 
-  // 2. NERACA AKTIVA & PASIVA (Hal. 2 PDF)
   const n = db.neraca;
   const { sub1, totInv, total: totalAktiva } = calcTotalAktiva();
 
@@ -1912,7 +1896,6 @@ function renderLaporan() {
     <tr class="total-row"><td><strong>TOTAL PASIVA</strong></td><td class="num"><strong>${fmtInt(totalPasiva)}</strong></td></tr>
   `;
 
-  // 3. NERACA LAJUR RINGKAS (Hal. 3 PDF)
   const rowsLajur = [
     ["KAS", 1191175.50, 0, n.kas, 0, 0, 0, n.kas, 0],
     ["BANK", 4166487.80, 0, n.bank, 0, 0, 0, n.bank, 0],
@@ -1970,7 +1953,7 @@ function renderLaporan() {
 // ==================== DATABASE CLOUD (GOOGLE SHEETS) ====================
 function getCloudConfig() {
   try {
-    return JSON.parse(localStorage.getItem(CLOUD_KEY)) || { url: "", autoSync: true };
+    return JSON.parse(localStorage.getItem(CLOUD_KEY) || localStorage.getItem("ksu_ngeksigondo_cloud_cfg")) || { url: "", autoSync: true };
   } catch (e) {
     return { url: "", autoSync: true };
   }
@@ -1996,7 +1979,7 @@ function saveCloudUrl() {
   localStorage.setItem(CLOUD_KEY, JSON.stringify({ url, autoSync }));
   updateCloudUI();
   if (url) {
-    showToast("URL Google Sheets disimpan! Mengirim data awal...");
+    showToast("URL Google Sheets disimpan! Mengirim data...");
     pushToCloud(false);
   } else {
     showToast("URL Cloud dihapus. Menggunakan penyimpanan lokal.");
@@ -2039,6 +2022,7 @@ async function pullFromCloud() {
     const res = await fetch(cfg.url);
     const data = await res.json();
     if (data && data.neraca && data.anggotaAktif) {
+      data.meta = { namaKoperasi: "SIMPAN PINJAM NGEKSIGONDO", periode: "PER 31 DESEMBER 2025" };
       db = data;
       saveDatabase(false);
       renderAll();
@@ -2059,7 +2043,7 @@ function exportJSON() {
   const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `Backup_KSU_Ngeksigondo_${new Date().toISOString().split("T")[0]}.json`;
+  a.download = `Backup_Simpan_Pinjam_Ngeksigondo_${new Date().toISOString().split("T")[0]}.json`;
   a.click();
 }
 
@@ -2071,6 +2055,7 @@ function importJSON(event) {
     try {
       const parsed = JSON.parse(e.target.result);
       if (parsed && parsed.neraca && parsed.anggotaAktif) {
+        parsed.meta = { namaKoperasi: "SIMPAN PINJAM NGEKSIGONDO", periode: "PER 31 DESEMBER 2025" };
         db = parsed;
         saveDatabase(true);
         renderAll();
