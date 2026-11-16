@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>SIMPAN PINJAM NGEKSIGONDO - Sistem Pembukuan & Laporan RAT</title>
+  <title>SIMPAN PINJAM NGEKSIGONDO - Portal Anggota & Pembukuan RAT</title>
   <style>
     :root {
       --primary: #0f766e;
@@ -37,20 +37,30 @@
     .login-card {
       background: #fff;
       width: 100%;
-      max-width: 410px;
+      max-width: 420px;
       border-radius: 16px;
-      padding: 28px 24px;
+      padding: 26px 22px;
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.25);
     }
     .login-logo {
       width: 52px; height: 52px; border-radius: 14px;
       background: var(--primary); color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: 800; margin: 0 auto 12px;
+      font-size: 20px; font-weight: 800; margin: 0 auto 10px;
     }
-    .login-card h1 { text-align: center; font-size: 18px; color: var(--secondary); font-weight: 800; letter-spacing: 0.3px; }
-    .login-card p.sub { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 20px; }
-    .form-group { margin-bottom: 14px; }
+    .login-card h1 { text-align: center; font-size: 17.5px; color: var(--secondary); font-weight: 800; letter-spacing: 0.3px; }
+    .login-card p.sub { text-align: center; color: var(--muted); font-size: 12.5px; margin-bottom: 16px; }
+    .role-switch {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      background: #f1f5f9; padding: 4px; border-radius: 10px; margin-bottom: 16px;
+    }
+    .role-btn {
+      padding: 8px; border: none; border-radius: 8px; font-size: 13px;
+      font-weight: 700; cursor: pointer; background: transparent; color: var(--muted);
+      transition: all 0.15s;
+    }
+    .role-btn.active { background: #fff; color: var(--primary-dark); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 13px; }
     .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
     .form-control {
       width: 100%; min-height: 44px; padding: 10px 12px;
@@ -85,7 +95,7 @@
     }
     .shake { animation: shake 0.3s ease-in-out; }
 
-    /* APP LAYOUT */
+    /* APP LAYOUT (ADMIN) */
     .app-shell { display: flex; min-height: 100vh; }
     .sidebar {
       width: 265px; background: var(--secondary); color: #e2e8f0;
@@ -132,6 +142,27 @@
     }
     .bnav-btn.active { color: var(--primary); }
     .bnav-btn span.ico { font-size: 16px; }
+
+    /* MEMBER PORTAL LAYOUT */
+    #memberPortal { min-height: 100vh; background: var(--bg); padding-bottom: 40px; }
+    .member-header {
+      background: linear-gradient(135deg, #0f172a 0%, #0f766e 100%);
+      color: #fff; padding: 18px 16px 28px;
+    }
+    .member-wrap { max-width: 780px; margin: 0 auto; padding: 0 14px; }
+    .member-id-card {
+      background: #fff; border-radius: 16px; padding: 18px;
+      margin-top: -18px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+      border: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .simpanan-grid-member {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px;
+    }
+    .simp-box {
+      background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px;
+    }
+    .simp-box .lbl { font-size: 11.5px; color: var(--muted); font-weight: 600; }
+    .simp-box .val { font-size: 15px; font-weight: 800; color: var(--secondary); margin-top: 2px; }
 
     /* HEADER & CARDS */
     .page-header {
@@ -267,37 +298,168 @@
 <!-- TOAST NOTIFICATION -->
 <div id="toast" class="toast hidden"></div>
 
-<!-- ==================== HALAMAN LOGIN ==================== -->
+<!-- ==================== HALAMAN LOGIN (ANGGOTA & ADMIN) ==================== -->
 <div id="loginScreen">
   <div class="login-card" id="loginCard">
     <div class="login-logo">SP</div>
     <h1>SIMPAN PINJAM NGEKSIGONDO</h1>
-    <p class="sub">Sistem Pembukuan Simpan Pinjam & Laporan RAT</p>
-    <div id="loginError" class="login-err hidden">Username atau password salah. Gunakan <b>admin</b> / <b>1234</b>.</div>
-    <form id="loginForm">
+    <p class="sub">Sistem Informasi Keanggotaan & Pembukuan RAT</p>
+
+    <div class="role-switch">
+      <button type="button" class="role-btn active" id="btnRoleAnggota" onclick="switchLoginRole('anggota')">👤 Login Anggota</button>
+      <button type="button" class="role-btn" id="btnRoleAdmin" onclick="switchLoginRole('admin')">🔐 Login Pengurus</button>
+    </div>
+
+    <div id="loginError" class="login-err hidden"></div>
+
+    <!-- FORM LOGIN ANGGOTA -->
+    <form id="memberLoginForm">
       <div class="form-group">
-        <label for="loginUser">Username</label>
+        <label for="memNoInput">Nomor Anggota *</label>
+        <input type="text" id="memNoInput" class="form-control" inputmode="numeric" placeholder="Masukkan Nomor Anggota (cth: 1, 5, 11)" required />
+      </div>
+      <div class="form-group">
+        <label for="memPinInput">PIN Keanggotaan *</label>
+        <div style="position:relative;">
+          <input type="password" id="memPinInput" class="form-control" inputmode="numeric" placeholder="Masukkan PIN (default: Nomor Anggota)" required style="padding-right:44px;" />
+          <button type="button" onclick="toggleVis('memPinInput')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;">👁️</button>
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">PIN standar awal sama dengan <b>Nomor Anggota</b> Anda (dapat diubah setelah masuk).</div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Lihat Data Keanggotaan Saya</button>
+    </form>
+
+    <!-- FORM LOGIN ADMIN / PENGURUS -->
+    <form id="adminLoginForm" class="hidden">
+      <div class="form-group">
+        <label for="loginUser">Username Pengurus</label>
         <input type="text" id="loginUser" class="form-control" placeholder="Masukkan username" autocomplete="username" required />
       </div>
       <div class="form-group">
         <label for="loginPass">Password</label>
         <div style="position:relative;">
           <input type="password" id="loginPass" class="form-control" placeholder="Masukkan password" autocomplete="current-password" required style="padding-right:44px;" />
-          <button type="button" id="togglePassBtn" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;" title="Tampilkan Password">👁️</button>
+          <button type="button" onclick="toggleVis('loginPass')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;">👁️</button>
         </div>
       </div>
       <div class="form-group" style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px;">
         <label style="display:flex;align-items:center;gap:6px;margin:0;cursor:pointer;">
           <input type="checkbox" id="rememberMe" checked /> Ingat sesi masuk
         </label>
-        <button type="button" id="autoFillLogin" style="background:none;border:none;color:var(--primary);font-weight:700;cursor:pointer;font-size:12px;">Isi Otomatis (admin/1234)</button>
+        <button type="button" id="autoFillLogin" style="background:none;border:none;color:var(--primary);font-weight:700;cursor:pointer;font-size:12px;">Isi Otomatis</button>
       </div>
-      <button type="submit" class="btn btn-primary btn-block" style="margin-top:6px;">Masuk ke Aplikasi</button>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:6px;">Masuk sebagai Pengurus</button>
     </form>
   </div>
 </div>
 
-<!-- ==================== APLIKASI UTAMA ==================== -->
+<!-- ==================== PORTAL KHUSUS ANGGOTA (HANYA DATA PRIBADI) ==================== -->
+<div id="memberPortal" class="hidden">
+  <div class="member-header">
+    <div class="member-wrap" style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+      <div>
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;opacity:0.8;">SIMPAN PINJAM NGEKSIGONDO</div>
+        <h2 style="font-size:18px;font-weight:800;">Kartu Informasi Anggota</h2>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3);" onclick="syncMemberData()">🔄 Segarkan</button>
+        <button class="btn btn-danger btn-sm" onclick="doLogout()">Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="member-wrap">
+    <!-- IDENTITAS ANGGOTA -->
+    <div class="member-id-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+        <div>
+          <span class="pill pill-green" id="mpStatusBadge">ANGGOTA AKTIF</span>
+          <h3 style="font-size:20px;font-weight:800;color:var(--secondary);margin-top:6px;" id="mpNama">-</h3>
+          <div style="font-size:13px;color:var(--muted);">Nomor Pokok Anggota: <strong style="color:var(--primary-dark);" id="mpNo">-</strong></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11.5px;color:var(--muted);">Total Saldo Simpanan Anda</div>
+          <div style="font-size:22px;font-weight:800;color:var(--primary);" id="mpTotalSimpanan">Rp 0</div>
+          <div style="font-size:11px;color:var(--muted);" id="mpPeriodeInfo">Posisi Pembukuan Terkini</div>
+        </div>
+      </div>
+
+      <hr style="margin:14px 0;border:none;border-top:1px solid var(--border);" />
+
+      <div style="font-weight:700;font-size:13px;color:var(--secondary);">Rincian 6 Jenis Simpanan Pribadi</div>
+      <div class="simpanan-grid-member">
+        <div class="simp-box">
+          <div class="lbl">Simpanan Pokok</div>
+          <div class="val" id="mpPokok">Rp 0</div>
+        </div>
+        <div class="simp-box">
+          <div class="lbl">Simpanan Wajib</div>
+          <div class="val" id="mpWajib">Rp 0</div>
+        </div>
+        <div class="simp-box">
+          <div class="lbl">Simpanan Sukarela</div>
+          <div class="val" id="mpSukarela">Rp 0</div>
+        </div>
+        <div class="simp-box">
+          <div class="lbl">Simp. Wajib Pinjam</div>
+          <div class="val" id="mpWajibPinjam">Rp 0</div>
+        </div>
+        <div class="simp-box">
+          <div class="lbl">Simpanan Khusus</div>
+          <div class="val" id="mpKhusus">Rp 0</div>
+        </div>
+        <div class="simp-box">
+          <div class="lbl">Simpanan Lain-lain</div>
+          <div class="val" id="mpLain">Rp 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PINJAMAN PRIBADI ANGGOTA -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">💰 Status Pinjaman Atas Nama Anda</div>
+          <div style="font-size:12px;color:var(--muted);">Menampilkan pinjaman yang terdaftar pada akun Anda</div>
+        </div>
+      </div>
+      <div id="mpPinjamanBox"></div>
+    </div>
+
+    <!-- RIWAYAT MUTASI PRIBADI -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📒 Riwayat Transaksi Terkait Akun Anda</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Keterangan Transaksi</th>
+              <th class="num">Masuk</th>
+              <th class="num">Keluar</th>
+            </tr>
+          </thead>
+          <tbody id="mpJurnalBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- UBAH PIN PRIBADI -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🔐 Ubah PIN Keanggotaan Anda</div>
+      </div>
+      <form onsubmit="changeMemberPin(event)" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <input type="password" id="mpNewPin" class="form-control" inputmode="numeric" style="max-width:240px;" placeholder="Masukkan PIN baru (min. 4 angka)" required />
+        <button type="submit" class="btn btn-primary">Simpan PIN Baru</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APLIKASI UTAMA (PENGURUS / ADMIN) ==================== -->
 <div id="appContainer" class="app-shell hidden">
   <!-- SIDEBAR DESKTOP -->
   <aside class="sidebar">
@@ -468,6 +630,7 @@
                 <th class="num">Simp. Khusus</th>
                 <th class="num">Simp. Lain-lain</th>
                 <th class="num">Jumlah</th>
+                <th>PIN Login</th>
                 <th class="no-print">Aksi</th>
               </tr>
             </thead>
@@ -590,7 +753,6 @@
         <button class="tab-btn" id="repTabLajur" onclick="setReportTab('lajur')">3. Neraca Lajur (Worksheet)</button>
       </div>
 
-      <!-- TAB 1: LABA RUGI -->
       <div id="report-lr" class="card">
         <div style="text-align:center;margin-bottom:14px;">
           <h3 style="font-size:16px;font-weight:800;">LAPORAN LABA RUGI</h3>
@@ -602,7 +764,6 @@
         </div>
       </div>
 
-      <!-- TAB 2: NERACA -->
       <div id="report-neraca" class="card hidden">
         <div style="text-align:center;margin-bottom:14px;">
           <h3 style="font-size:16px;font-weight:800;">NERACA</h3>
@@ -621,7 +782,6 @@
         </div>
       </div>
 
-      <!-- TAB 3: NERACA LAJUR -->
       <div id="report-lajur" class="card hidden">
         <div style="text-align:center;margin-bottom:14px;">
           <h3 style="font-size:16px;font-weight:800;">NERACA LAJUR</h3>
@@ -655,7 +815,6 @@
         </div>
       </div>
 
-      <!-- CLOUD GOOGLE SHEETS -->
       <div class="card" style="border-left: 4px solid var(--primary);">
         <div class="card-header">
           <div>
@@ -680,27 +839,8 @@
           <input type="checkbox" id="autoSyncCheck" checked onchange="toggleAutoSync()" />
           <label for="autoSyncCheck" style="margin:0;cursor:pointer;">Otomatis kirim ke Google Sheets setiap kali ada transaksi baru</label>
         </div>
-
-        <details style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:12.5px;">
-          <summary style="font-weight:700;cursor:pointer;color:var(--primary-dark);">📋 Lihat Kode Google Apps Script (Untuk Ditempel di Spreadsheet)</summary>
-          <p style="margin:8px 0;color:var(--muted);">Buka Google Sheet Anda → klik <b>Extensions &gt; Apps Script</b> → tempel kode di bawah ini → klik <b>Deploy &gt; New deployment &gt; Web app</b> (Who has access: <b>Anyone</b>):</p>
-          <pre style="background:#0f172a;color:#e2e8f0;padding:10px;border-radius:8px;overflow-x:auto;font-size:11.5px;">function doGet(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
-  var val = sheet.getRange('A1').getValue();
-  return ContentService.createTextOutput(val || '{}').setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
-  var data = e.postData.contents;
-  sheet.getRange('A1').setValue(data);
-  sheet.getRange('A2').setValue('Terakhir disimpan: ' + new Date());
-  return ContentService.createTextOutput(JSON.stringify({status: 'ok'})).setMimeType(ContentService.MimeType.JSON);
-}</pre>
-        </details>
       </div>
 
-      <!-- BACKUP JSON & RESET -->
       <div class="grid-2">
         <div class="card">
           <div class="card-header">
@@ -721,10 +861,10 @@ function doPost(e) {
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🔐 Keamanan Akun Login</div>
+            <div class="card-title">🔐 Keamanan Akun Login Pengurus</div>
           </div>
           <div class="form-group">
-            <label>Username Login</label>
+            <label>Username Login Pengurus</label>
             <input type="text" id="cfgUsername" class="form-control" value="admin" />
           </div>
           <div class="form-group">
@@ -1026,6 +1166,9 @@ function doPost(e) {
 </div>
 
 <script>
+// ==================== URL CLOUD BAWAAN AGAR ANGGOTA OTOMATIS TERHUBUNG ====================
+const DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbw4uUVa-UeGeIbde3fpP2ofw4Uf4MbUzjxbjSNSMAQXg7sYSBjFlzZZAUO1EA_FVKZfyQ/exec";
+
 // ==================== SEED DATA LENGKAP RAT 31 DESEMBER 2025 ====================
 const SEED_DATA = {
   meta: {
@@ -1033,45 +1176,18 @@ const SEED_DATA = {
     periode: "PER 31 DESEMBER 2025"
   },
   neraca: {
-    kas: 1354125,
-    bank: 9161488,
-    pinjamanAnggota: 72933000,
-    piutangAsuransi: 0,
-    piutangDagang: 3946000,
-    persediaanBatik: 1650100,
-    inventaris: 1951500,
-    pakaianJawa: 250000,
-    akmPenyusutan: 1590000,
-    simpSukarela: 19486035,
-    simpLainLain: 2771561,
-    simpSukarelaNonAnggota: 0,
-    danaPegawai: 876756,
-    danaPengurus: 1246616,
-    danaPendidikan: 3411756,
-    danaSosial: 1933099,
-    danaPembDaerah: 263378,
-    utangDagang: 48500,
-    hutangArisan: 928500,
-    hutangPaguyuban: 700,
-    simpKasKopLama: 430000,
-    simpKhusus: 6525000,
-    simpPokok: 3896000,
-    simpWajib: 14833500,
-    simpWajibPinjaman: 4234133,
-    sumbanganBpt: 2773078,
-    donasi: 1319703,
-    cadangan: 12210289,
-    shuBulanLalu: 0,
-    jasaSimpanan: 5331826,
-    jasaAnggota: 6664783
+    kas: 1354125, bank: 9161488, pinjamanAnggota: 72933000, piutangAsuransi: 0,
+    piutangDagang: 3946000, persediaanBatik: 1650100, inventaris: 1951500, pakaianJawa: 250000, akmPenyusutan: 1590000,
+    simpSukarela: 19486035, simpLainLain: 2771561, simpSukarelaNonAnggota: 0,
+    danaPegawai: 876756, danaPengurus: 1246616, danaPendidikan: 3411756, danaSosial: 1933099, danaPembDaerah: 263378,
+    utangDagang: 48500, hutangArisan: 928500, hutangPaguyuban: 700, simpKasKopLama: 430000,
+    simpKhusus: 6525000, simpPokok: 3896000, simpWajib: 14833500, simpWajibPinjaman: 4234133,
+    sumbanganBpt: 2773078, donasi: 1319703, cadangan: 12210289, shuBulanLalu: 0,
+    jasaSimpanan: 5331826, jasaAnggota: 6664783
   },
   labaRugi: {
-    pendBungaPinjaman: 1523000,
-    pendAdm: 0,
-    pendBungaBank: 0,
-    pendLain: 0,
-    biayaAdmBank: 0,
-    biayaOrganisasi: 1052000
+    pendBungaPinjaman: 1523000, pendAdm: 0, pendBungaBank: 0, pendLain: 0,
+    biayaAdmBank: 0, biayaOrganisasi: 1052000
   },
   anggotaAktif: [
     { id: "A-1", no: "1", nama: "Susanto", pokok: 50000, wajib: 370800, sukarela: 222649.76, wajibPinjam: 166500, khusus: 170000, lain: 165400 },
@@ -1163,10 +1279,11 @@ const SEED_DATA = {
 
 // ==================== STATE & STORAGE ====================
 const STORAGE_KEY = "sp_ngeksigondo_db_v3";
-const AUTH_KEY = "sp_ngeksigondo_auth";
+const AUTH_KEY = "sp_ngeksigondo_session";
 const CLOUD_KEY = "sp_ngeksigondo_cloud_cfg";
 
 let db = null;
+let currentMemberId = null;
 let currentSimpananTab = "aktif";
 let currentPinjamanTab = "lancar";
 
@@ -1201,6 +1318,10 @@ function fmtRp(n) {
   const num = Number(n) || 0;
   return "Rp " + Math.round(num).toLocaleString("id-ID");
 }
+function fmtRpDec(n) {
+  const num = Number(n) || 0;
+  return "Rp " + num.toLocaleString("id-ID", { minimumFractionDigits: num % 1 !== 0 ? 2 : 0, maximumFractionDigits: 2 });
+}
 function fmtNum(n) {
   const num = Number(n) || 0;
   if (num === 0) return "-";
@@ -1231,63 +1352,255 @@ document.addEventListener("input", (e) => {
   }
 });
 
-// ==================== LOGIN & AUTH ====================
+// ==================== LOGIN ROLE & AUTH ====================
+function switchLoginRole(role) {
+  const isMem = role === "anggota";
+  document.getElementById("btnRoleAnggota").classList.toggle("active", isMem);
+  document.getElementById("btnRoleAdmin").classList.toggle("active", !isMem);
+  document.getElementById("memberLoginForm").classList.toggle("hidden", !isMem);
+  document.getElementById("adminLoginForm").classList.toggle("hidden", isMem);
+  document.getElementById("loginError").classList.add("hidden");
+}
+
+function toggleVis(id) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === "password" ? "text" : "password";
+}
+
+function showLoginErr(msg) {
+  const err = document.getElementById("loginError");
+  err.textContent = msg;
+  err.classList.remove("hidden");
+  const card = document.getElementById("loginCard");
+  card.classList.remove("shake");
+  void card.offsetWidth;
+  card.classList.add("shake");
+}
+
 function getCredentials() {
   const saved = JSON.parse(localStorage.getItem("sp_creds") || localStorage.getItem("ksu_creds") || "null");
   return saved || { user: "admin", pass: "1234" };
 }
 
 function checkAuth() {
-  const isLogged = sessionStorage.getItem(AUTH_KEY) === "1" || localStorage.getItem(AUTH_KEY) === "1";
-  if (isLogged) {
-    document.getElementById("loginScreen").classList.add("hidden");
-    document.getElementById("appContainer").classList.remove("hidden");
-    initApp();
-  } else {
-    document.getElementById("loginScreen").classList.remove("hidden");
-    document.getElementById("appContainer").classList.add("hidden");
+  loadDatabase();
+  const sessRaw = sessionStorage.getItem(AUTH_KEY) || localStorage.getItem(AUTH_KEY);
+  if (sessRaw) {
+    try {
+      const sess = JSON.parse(sessRaw);
+      if (sess.role === "admin") {
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("memberPortal").classList.add("hidden");
+        document.getElementById("appContainer").classList.remove("hidden");
+        initApp();
+        return;
+      }
+      if (sess.role === "member" && sess.memberId) {
+        currentMemberId = sess.memberId;
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("appContainer").classList.add("hidden");
+        document.getElementById("memberPortal").classList.remove("hidden");
+        renderMemberPortal();
+        return;
+      }
+    } catch (e) {}
   }
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("appContainer").classList.add("hidden");
+  document.getElementById("memberPortal").classList.add("hidden");
 }
 
-document.getElementById("togglePassBtn").addEventListener("click", () => {
-  const inp = document.getElementById("loginPass");
-  inp.type = inp.type === "password" ? "text" : "password";
+// Submit Login Anggota
+document.getElementById("memberLoginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const noInput = document.getElementById("memNoInput").value.trim();
+  const pinInput = document.getElementById("memPinInput").value.trim();
+
+  // Coba tarik data terbaru dari cloud jika terhubung agar anggota mendapat data terbaru
+  const cfg = getCloudConfig();
+  if (cfg.url) {
+    try {
+      const res = await fetch(cfg.url);
+      const cloudData = await res.json();
+      if (cloudData && cloudData.anggotaAktif) {
+        db = cloudData;
+        saveDatabase(false);
+      }
+    } catch (err) {}
+  }
+
+  const allMembers = [
+    ...db.anggotaAktif.map(a => ({ ...a, statusKeanggotaan: "ANGGOTA AKTIF" })),
+    ...db.anggotaNonAktif.map(a => ({ ...a, statusKeanggotaan: "ANGGOTA TIDAK AKTIF" }))
+  ];
+
+  const found = allMembers.find(a => String(a.no).trim() === noInput);
+  if (!found) {
+    return showLoginErr("Nomor Anggota tidak ditemukan. Periksa kembali nomor keanggotaan Anda.");
+  }
+
+  const validPin = found.pin ? String(found.pin) : String(found.no).trim();
+  if (pinInput !== validPin) {
+    return showLoginErr("PIN Keanggotaan salah. PIN bawaan awal adalah Nomor Anggota Anda.");
+  }
+
+  sessionStorage.setItem(AUTH_KEY, JSON.stringify({ role: "member", memberId: found.id }));
+  document.getElementById("loginError").classList.add("hidden");
+  checkAuth();
 });
 
+// Submit Login Admin
 document.getElementById("autoFillLogin").addEventListener("click", () => {
   const creds = getCredentials();
   document.getElementById("loginUser").value = creds.user;
   document.getElementById("loginPass").value = creds.pass;
 });
 
-document.getElementById("loginForm").addEventListener("submit", (e) => {
+document.getElementById("adminLoginForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const u = document.getElementById("loginUser").value.trim();
   const p = document.getElementById("loginPass").value.trim();
   const creds = getCredentials();
   if (u === creds.user && p === creds.pass) {
+    const payload = JSON.stringify({ role: "admin" });
     if (document.getElementById("rememberMe").checked) {
-      localStorage.setItem(AUTH_KEY, "1");
+      localStorage.setItem(AUTH_KEY, payload);
     } else {
-      sessionStorage.setItem(AUTH_KEY, "1");
+      sessionStorage.setItem(AUTH_KEY, payload);
     }
     document.getElementById("loginError").classList.add("hidden");
     checkAuth();
   } else {
-    const card = document.getElementById("loginCard");
-    document.getElementById("loginError").classList.remove("hidden");
-    card.classList.remove("shake");
-    void card.offsetWidth;
-    card.classList.add("shake");
+    showLoginErr("Username atau password pengurus salah.");
   }
 });
 
 function doLogout() {
   localStorage.removeItem(AUTH_KEY);
   sessionStorage.removeItem(AUTH_KEY);
+  currentMemberId = null;
   checkAuth();
 }
 
+// ==================== RENDER PORTAL ANGGOTA (HANYA DATA PRIBADI) ====================
+function findMemberById(id) {
+  const aktif = db.anggotaAktif.find(a => a.id === id);
+  if (aktif) return { data: aktif, status: "ANGGOTA AKTIF" };
+  const non = db.anggotaNonAktif.find(a => a.id === id);
+  if (non) return { data: non, status: "ANGGOTA TIDAK AKTIF" };
+  return null;
+}
+
+function renderMemberPortal() {
+  const found = findMemberById(currentMemberId);
+  if (!found) return doLogout();
+
+  const a = found.data;
+  const badge = document.getElementById("mpStatusBadge");
+  badge.textContent = found.status;
+  badge.className = found.status === "ANGGOTA AKTIF" ? "pill pill-green" : "pill pill-amber";
+
+  document.getElementById("mpNama").textContent = a.nama;
+  document.getElementById("mpNo").textContent = a.no;
+
+  const totalSimp = (a.pokok || 0) + (a.wajib || 0) + (a.sukarela || 0) + (a.wajibPinjam || 0) + (a.khusus || 0) + (a.lain || 0);
+  document.getElementById("mpTotalSimpanan").textContent = fmtRpDec(totalSimp);
+  document.getElementById("mpPokok").textContent = fmtRp(a.pokok);
+  document.getElementById("mpWajib").textContent = fmtRp(a.wajib);
+  document.getElementById("mpSukarela").textContent = fmtRpDec(a.sukarela);
+  document.getElementById("mpWajibPinjam").textContent = fmtRp(a.wajibPinjam);
+  document.getElementById("mpKhusus").textContent = fmtRp(a.khusus);
+  document.getElementById("mpLain").textContent = fmtRp(a.lain);
+
+  // Filter pinjaman yang cocok dengan nama anggota ini saja
+  const namaLower = a.nama.toLowerCase();
+  const kataKunci = namaLower.split(/[.,\s]+/).filter(w => w.length >= 4 && !["dra", "drs", "hj", "ny", "ir", "ba", "ma", "sh"].includes(w));
+  const pinjPribadi = (db.pinjaman || []).filter(p => {
+    const pNama = p.nama.toLowerCase();
+    return pNama === namaLower || kataKunci.some(k => pNama.includes(k));
+  });
+
+  const pinjBox = document.getElementById("mpPinjamanBox");
+  if (pinjPribadi.length === 0) {
+    pinjBox.innerHTML = `<div style="padding:12px;background:#f8fafc;border-radius:10px;color:var(--muted);font-size:13px;">Tidak ada pinjaman aktif atas nama Anda saat ini.</div>`;
+  } else {
+    pinjBox.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal Pinjam</th>
+              <th class="num">Besar Pinjaman</th>
+              <th class="num">Sisa Saldo</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pinjPribadi.map(p => `
+              <tr>
+                <td>${p.tglTampil || p.tanggal}</td>
+                <td class="num">${fmtRp(p.besar)}</td>
+                <td class="num bold">${fmtRp(p.saldo)}</td>
+                <td>${p.saldo <= 0 ? '<span class="pill pill-gray">Lunas</span>' : (p.status === 'lancar' ? '<span class="pill pill-green">Berjalan</span>' : '<span class="pill pill-red">Tunggakan</span>')}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  // Filter jurnal pribadi anggota ini saja
+  const jurnalPribadi = (db.jurnal || []).filter(j => {
+    const ketLow = (j.ket || "").toLowerCase();
+    return ketLow.includes(namaLower) || kataKunci.some(k => ketLow.includes(k));
+  }).reverse();
+
+  const jBody = document.getElementById("mpJurnalBody");
+  if (jurnalPribadi.length === 0) {
+    jBody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);">Belum ada riwayat transaksi baru setelah tutup buku RAT 31 Des 2025.</td></tr>`;
+  } else {
+    jBody.innerHTML = jurnalPribadi.map(j => `
+      <tr>
+        <td>${j.tanggal}</td>
+        <td>${j.ket}</td>
+        <td class="num" style="color:var(--success);font-weight:600;">${j.debet ? fmtInt(j.debet) : "-"}</td>
+        <td class="num" style="color:var(--danger);font-weight:600;">${j.kredit ? fmtInt(j.kredit) : "-"}</td>
+      </tr>
+    `).join("");
+  }
+}
+
+async function syncMemberData() {
+  const cfg = getCloudConfig();
+  if (!cfg.url) return showToast("Data sudah sesuai penyimpanan lokal.");
+  showToast("Mengambil data terbaru...");
+  try {
+    const res = await fetch(cfg.url);
+    const data = await res.json();
+    if (data && data.anggotaAktif) {
+      db = data;
+      saveDatabase(false);
+      renderMemberPortal();
+      showToast("Data keanggotaan berhasil diperbarui!");
+    }
+  } catch (e) {
+    showToast("Gagal menyegarkan data dari server.", true);
+  }
+}
+
+function changeMemberPin(e) {
+  e.preventDefault();
+  const newPin = document.getElementById("mpNewPin").value.trim();
+  if (newPin.length < 4) return showToast("PIN minimal 4 karakter/angka!", true);
+  const found = findMemberById(currentMemberId);
+  if (!found) return;
+  found.data.pin = newPin;
+  saveDatabase(true);
+  document.getElementById("mpNewPin").value = "";
+  showToast("PIN keanggotaan Anda berhasil diubah!");
+}
+
+// ==================== ADMIN CREDENTIALS & NAVIGASI ====================
 function updateCredentials() {
   const u = document.getElementById("cfgUsername").value.trim();
   const p = document.getElementById("cfgPassword").value.trim();
@@ -1295,10 +1608,9 @@ function updateCredentials() {
   const old = getCredentials();
   localStorage.setItem("sp_creds", JSON.stringify({ user: u, pass: p || old.pass }));
   document.getElementById("cfgPassword").value = "";
-  showToast("Username & password berhasil diperbarui!");
+  showToast("Username & password pengurus berhasil diperbarui!");
 }
 
-// ==================== NAVIGASI ====================
 function switchPage(page) {
   document.querySelectorAll(".page-sec").forEach(el => el.classList.add("hidden"));
   const target = document.getElementById("page-" + page);
@@ -1328,7 +1640,7 @@ function closeModal(id) {
   document.getElementById(id).classList.add("hidden");
 }
 
-// ==================== PERHITUNGAN & RENDER ====================
+// ==================== PERHITUNGAN & RENDER ADMIN ====================
 function calcSHU() {
   const lr = db.labaRugi;
   const totalPend = (lr.pendBungaPinjaman || 0) + (lr.pendAdm || 0) + (lr.pendBungaBank || 0) + (lr.pendLain || 0);
@@ -1421,7 +1733,6 @@ function renderDashboard() {
   `).join("");
 }
 
-// ==================== RENDER SIMPANAN ANGGOTA ====================
 function setSimpananTab(tab) {
   currentSimpananTab = tab;
   document.getElementById("tabAnggotaAktif").classList.toggle("active", tab === "aktif");
@@ -1456,6 +1767,7 @@ function renderSimpananTable() {
         <td class="num">${fmtInt(a.khusus)}</td>
         <td class="num">${fmtInt(a.lain)}</td>
         <td class="num bold">${fmtNum(jml)}</td>
+        <td><span class="pill pill-gray">${a.pin ? a.pin : a.no}</span></td>
         <td class="no-print">
           <button class="btn btn-primary btn-sm" onclick="quickSetorAnggota('${a.id}')">+ Setor</button>
         </td>
@@ -1472,7 +1784,7 @@ function renderSimpananTable() {
       <td class="num">${fmtInt(tKhusus)}</td>
       <td class="num">${fmtInt(tLain)}</td>
       <td class="num">${fmtNum(tAll)}</td>
-      <td class="no-print"></td>
+      <td colspan="2" class="no-print"></td>
     </tr>`;
 
   document.getElementById("simpananTableBody").innerHTML = rows + totalRow;
@@ -1496,7 +1808,6 @@ function quickSetorAnggota(id) {
   document.getElementById("simpAnggotaId").value = id;
 }
 
-// ==================== RENDER PINJAMAN & MACET ====================
 function setPinjamanTab(tab) {
   currentPinjamanTab = tab;
   document.getElementById("tabPinjLancar").classList.toggle("active", tab === "lancar");
@@ -1569,7 +1880,6 @@ function openAngsuranModal(id) {
   openModal("modalAngsuran");
 }
 
-// ==================== PROSES TRANSAKSI ====================
 function submitPinjamanBaru(e) {
   e.preventDefault();
   const nama = document.getElementById("pinjNama").value.trim();
@@ -1577,39 +1887,20 @@ function submitPinjamanBaru(e) {
   const sumber = document.getElementById("pinjSumber").value;
   const tanggal = document.getElementById("pinjTanggal").value;
 
-  if (!nama || besar <= 0) {
-    return showToast("Nama peminjam dan nominal harus diisi!", true);
-  }
-  if (sumber === "kas" && db.neraca.kas < besar) {
-    return showToast("Saldo Kas Tunai tidak mencukupi! Pilih sumber dana Bank atau tambah kas.", true);
-  }
-  if (sumber === "bank" && db.neraca.bank < besar) {
-    return showToast("Saldo Bank tidak mencukupi untuk pencairan ini!", true);
-  }
+  if (!nama || besar <= 0) return showToast("Nama peminjam dan nominal harus diisi!", true);
+  if (sumber === "kas" && db.neraca.kas < besar) return showToast("Saldo Kas Tunai tidak mencukupi!", true);
+  if (sumber === "bank" && db.neraca.bank < besar) return showToast("Saldo Bank tidak mencukupi!", true);
 
-  if (sumber === "kas") db.neraca.kas -= besar;
-  else db.neraca.bank -= besar;
-
+  if (sumber === "kas") db.neraca.kas -= besar; else db.neraca.bank -= besar;
   db.neraca.pinjamanAnggota += besar;
 
-  const idBaru = "P-" + Date.now();
   db.pinjaman.unshift({
-    id: idBaru,
-    nama: nama,
-    tanggal: tanggal,
-    tglTampil: tanggal,
-    besar: besar,
-    saldo: besar,
-    status: "lancar"
+    id: "P-" + Date.now(), nama, tanggal, tglTampil: tanggal, besar, saldo: besar, status: "lancar"
   });
 
   db.jurnal.push({
-    tanggal,
-    jenis: "Pinjaman Baru",
-    ket: `Pencairan pinjaman a.n. ${nama}`,
-    media: sumber === "kas" ? "Kas" : "Bank",
-    debet: 0,
-    kredit: besar
+    tanggal, jenis: "Pinjaman Baru", ket: `Pencairan pinjaman a.n. ${nama}`,
+    media: sumber === "kas" ? "Kas" : "Bank", debet: 0, kredit: besar
   });
 
   saveDatabase(true);
@@ -1637,20 +1928,13 @@ function submitAngsuran(e) {
   db.neraca.pinjamanAnggota = Math.max(0, db.neraca.pinjamanAnggota - pokok);
 
   const totalMasuk = pokok + bunga;
-  if (media === "kas") db.neraca.kas += totalMasuk;
-  else db.neraca.bank += totalMasuk;
-
-  if (bunga > 0) {
-    db.labaRugi.pendBungaPinjaman += bunga;
-  }
+  if (media === "kas") db.neraca.kas += totalMasuk; else db.neraca.bank += totalMasuk;
+  if (bunga > 0) db.labaRugi.pendBungaPinjaman += bunga;
 
   db.jurnal.push({
-    tanggal,
-    jenis: "Angsuran",
+    tanggal, jenis: "Angsuran",
     ket: `Angsuran ${p.nama} (Pokok: ${fmtInt(pokok)}, Bunga: ${fmtInt(bunga)})`,
-    media: media === "kas" ? "Kas" : "Bank",
-    debet: totalMasuk,
-    kredit: 0
+    media: media === "kas" ? "Kas" : "Bank", debet: totalMasuk, kredit: 0
   });
 
   saveDatabase(true);
@@ -1669,22 +1953,11 @@ function submitSimpanan(e) {
   const tanggal = document.getElementById("simpTanggal").value;
 
   if (nominal <= 0) return showToast("Nominal harus lebih dari 0!", true);
-
   let agt = db.anggotaAktif.find(a => a.id === id) || db.anggotaNonAktif.find(a => a.id === id);
   if (!agt) return;
 
-  const mapNeraca = {
-    pokok: "simpPokok",
-    wajib: "simpWajib",
-    sukarela: "simpSukarela",
-    wajibPinjam: "simpWajibPinjaman",
-    khusus: "simpKhusus",
-    lain: "simpLainLain"
-  };
-  const labelJenis = {
-    pokok: "Simp. Pokok", wajib: "Simp. Wajib", sukarela: "Simp. Sukarela",
-    wajibPinjam: "Simp. Wajib Pinjam", khusus: "Simp. Khusus", lain: "Simp. Lain-lain"
-  };
+  const mapNeraca = { pokok: "simpPokok", wajib: "simpWajib", sukarela: "simpSukarela", wajibPinjam: "simpWajibPinjaman", khusus: "simpKhusus", lain: "simpLainLain" };
+  const labelJenis = { pokok: "Simp. Pokok", wajib: "Simp. Wajib", sukarela: "Simp. Sukarela", wajibPinjam: "Simp. Wajib Pinjam", khusus: "Simp. Khusus", lain: "Simp. Lain-lain" };
 
   if (arah === "tarik") {
     if ((agt[jenis] || 0) < nominal) return showToast(`Saldo ${labelJenis[jenis]} anggota tidak mencukupi!`, true);
@@ -1695,21 +1968,13 @@ function submitSimpanan(e) {
     db.neraca[mapNeraca[jenis]] = Math.max(0, (db.neraca[mapNeraca[jenis]] || 0) - nominal);
     if (media === "kas") db.neraca.kas -= nominal; else db.neraca.bank -= nominal;
 
-    db.jurnal.push({
-      tanggal, jenis: "Penarikan",
-      ket: `Penarikan ${labelJenis[jenis]} a.n. ${agt.nama}`,
-      media: media === "kas" ? "Kas" : "Bank", debet: 0, kredit: nominal
-    });
+    db.jurnal.push({ tanggal, jenis: "Penarikan", ket: `Penarikan ${labelJenis[jenis]} a.n. ${agt.nama}`, media: media === "kas" ? "Kas" : "Bank", debet: 0, kredit: nominal });
   } else {
     agt[jenis] = (agt[jenis] || 0) + nominal;
     db.neraca[mapNeraca[jenis]] = (db.neraca[mapNeraca[jenis]] || 0) + nominal;
     if (media === "kas") db.neraca.kas += nominal; else db.neraca.bank += nominal;
 
-    db.jurnal.push({
-      tanggal, jenis: "Setoran",
-      ket: `Setoran ${labelJenis[jenis]} a.n. ${agt.nama}`,
-      media: media === "kas" ? "Kas" : "Bank", debet: nominal, kredit: 0
-    });
+    db.jurnal.push({ tanggal, jenis: "Setoran", ket: `Setoran ${labelJenis[jenis]} a.n. ${agt.nama}`, media: media === "kas" ? "Kas" : "Bank", debet: nominal, kredit: 0 });
   }
 
   saveDatabase(true);
@@ -1726,22 +1991,13 @@ function submitTambahAnggota(e) {
   const nama = document.getElementById("agtBaruNama").value.trim();
   const pokok = parseMoney(document.getElementById("agtBaruPokok").value);
 
-  const baru = {
-    id: (status === "aktif" ? "A-" : "NA-") + Date.now(),
-    no, nama, pokok, wajib: 0, sukarela: 0, wajibPinjam: 0, khusus: 0, lain: 0
-  };
-  if (status === "aktif") db.anggotaAktif.push(baru);
-  else db.anggotaNonAktif.push(baru);
+  const baru = { id: (status === "aktif" ? "A-" : "NA-") + Date.now(), no, nama, pokok, wajib: 0, sukarela: 0, wajibPinjam: 0, khusus: 0, lain: 0 };
+  if (status === "aktif") db.anggotaAktif.push(baru); else db.anggotaNonAktif.push(baru);
 
   if (pokok > 0) {
     db.neraca.simpPokok += pokok;
     db.neraca.kas += pokok;
-    db.jurnal.push({
-      tanggal: new Date().toISOString().split("T")[0],
-      jenis: "Anggota Baru",
-      ket: `Setoran Simp. Pokok anggota baru: ${nama}`,
-      media: "Kas", debet: pokok, kredit: 0
-    });
+    db.jurnal.push({ tanggal: new Date().toISOString().split("T")[0], jenis: "Anggota Baru", ket: `Setoran Simp. Pokok anggota baru: ${nama}`, media: "Kas", debet: pokok, kredit: 0 });
   }
 
   saveDatabase(true);
@@ -1788,13 +2044,11 @@ function submitMutasiKasBank(e) {
   if (nominal <= 0) return showToast("Nominal tidak valid!", true);
   if (arah === "kas_ke_bank") {
     if (db.neraca.kas < nominal) return showToast("Saldo Kas Tunai tidak mencukupi!", true);
-    db.neraca.kas -= nominal;
-    db.neraca.bank += nominal;
+    db.neraca.kas -= nominal; db.neraca.bank += nominal;
     db.jurnal.push({ tanggal, jenis: "Mutasi", ket: "Setor Kas Tunai ke Rekening Bank", media: "Kas → Bank", debet: nominal, kredit: nominal });
   } else {
     if (db.neraca.bank < nominal) return showToast("Saldo Bank tidak mencukupi!", true);
-    db.neraca.bank -= nominal;
-    db.neraca.kas += nominal;
+    db.neraca.bank -= nominal; db.neraca.kas += nominal;
     db.jurnal.push({ tanggal, jenis: "Mutasi", ket: "Tarik Tunai dari Bank ke Kas", media: "Bank → Kas", debet: nominal, kredit: nominal });
   }
 
@@ -1804,7 +2058,6 @@ function submitMutasiKasBank(e) {
   showToast("Mutasi Kas & Bank berhasil!");
 }
 
-// ==================== RENDER JURNAL & LAPORAN RAT ====================
 function renderJurnal() {
   const list = [...db.jurnal].reverse();
   document.getElementById("jurnalFullBody").innerHTML = list.map((j, i) => `
@@ -1821,9 +2074,7 @@ function renderJurnal() {
 }
 
 function setReportTab(tab) {
-  ["lr", "neraca", "lajur"].forEach(t => {
-    document.getElementById("report-" + t).classList.toggle("hidden", t !== tab);
-  });
+  ["lr", "neraca", "lajur"].forEach(t => document.getElementById("report-" + t).classList.toggle("hidden", t !== tab));
   document.getElementById("repTabLR").classList.toggle("active", tab === "lr");
   document.getElementById("repTabNeraca").classList.toggle("active", tab === "neraca");
   document.getElementById("repTabLajur").classList.toggle("active", tab === "lajur");
@@ -1953,10 +2204,10 @@ function renderLaporan() {
 // ==================== DATABASE CLOUD (GOOGLE SHEETS) ====================
 function getCloudConfig() {
   try {
-    return JSON.parse(localStorage.getItem(CLOUD_KEY) || localStorage.getItem("ksu_ngeksigondo_cloud_cfg")) || { url: "", autoSync: true };
-  } catch (e) {
-    return { url: "", autoSync: true };
-  }
+    const saved = JSON.parse(localStorage.getItem(CLOUD_KEY) || localStorage.getItem("ksu_ngeksigondo_cloud_cfg"));
+    if (saved && saved.url) return saved;
+  } catch (e) {}
+  return { url: DEFAULT_CLOUD_URL, autoSync: true };
 }
 
 function updateCloudUI(statusText = null, online = null) {
@@ -2010,7 +2261,7 @@ async function pushToCloud(silent = false) {
     if (!silent) showToast("Database berhasil disimpan ke Google Sheets!");
   } catch (err) {
     updateCloudUI("Gagal Sinkron Cloud", false);
-    if (!silent) showToast("Gagal mengirim data ke Google Sheets. Periksa koneksi internet.", true);
+    if (!silent) showToast("Gagal mengirim data ke Google Sheets.", true);
   }
 }
 
@@ -2030,15 +2281,14 @@ async function pullFromCloud() {
       showToast("Data terbaru berhasil ditarik dari Google Sheets!");
     } else {
       updateCloudUI("Cloud Masih Kosong", true);
-      showToast("Google Sheet masih kosong. Klik 'Simpan Data ke Cloud Sekarang' untuk mengisi data awal.", true);
+      showToast("Google Sheet masih kosong.", true);
     }
   } catch (err) {
     updateCloudUI("Gagal Tarik Cloud", false);
-    showToast("Gagal mengambil data dari Google Sheets. Pastikan akses Web App disetel ke 'Anyone'.", true);
+    showToast("Gagal mengambil data dari Google Sheets.", true);
   }
 }
 
-// ==================== BACKUP JSON & RESET ====================
 function exportJSON() {
   const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -2078,7 +2328,6 @@ function resetToRAT2025() {
   showToast("Data berhasil dikembalikan ke posisi awal RAT 31 Desember 2025!");
 }
 
-// ==================== INIT ====================
 function initApp() {
   loadDatabase();
   updateCloudUI();
